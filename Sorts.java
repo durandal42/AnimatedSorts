@@ -375,8 +375,8 @@ public class Sorts {
   }
   private static void QuickSortRecurse(final FancyIntegerArray fia,
                                        final int left, final int right) {
-    final int tolerance = 8;  // Smaller than this will get insertion sorted.
-    if (right - left < tolerance) {
+    final int TOLERANCE = 8;  // Smaller than this will get insertion sorted.
+    if (right - left < TOLERANCE) {
       return;
     }
 
