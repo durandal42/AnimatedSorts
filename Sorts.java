@@ -315,17 +315,16 @@ public class Sorts {
   }
 
   public static void InsertionSort(FancyIntegerArray fia) {
-    InsertionSort(fia, 0, fia.length());
-  }
-  // For use in recursive sorts that use InsertionSort on small problems.
-  public static void InsertionSort(FancyIntegerArray fia, int left, int right) {
-    InsertionSort(fia, left, right, 1);
+    for (int i = 1; i < fia.length(); i++) {
+      log("InsertionSort: " + i + " of " + fia.length() + " elements are sorted");
+      for (int j = i; (j >= 1) && (fia.compare(j - 1, j)); j -= 1) {
+        fia.swap(j, j - 1);
+      }
+    }
   }
   // For use in ShellSort.
-  public static void InsertionSort(FancyIntegerArray fia, int left, int right, int gap) {
-    for (int i = left + gap; i < right; i++) {
-      log("InsertionSort: " + (i - left) + " of " + (right - left) + " elements are sorted" +
-          (gap > 1 ? "with a gap of " + gap : ""));
+  public static void InsertionSortWithGap(FancyIntegerArray fia, int gap) {
+    for (int i = gap; i < fia.length(); i++) {
       for (int j = i; (j >= gap) && (fia.compare(j - gap, j)); j -= gap) {
         fia.swap(j, j - gap);
       }
@@ -335,7 +334,8 @@ public class Sorts {
   public static void ShellSort(FancyIntegerArray fia) {
     int gap = fia.length() / 3;
     while(gap > 0) {
-      InsertionSort(fia, 0, fia.length(), gap);
+      log("ShellSort: InsertionSorting with a gap of: " + gap);
+      InsertionSortWithGap(fia, gap);
       gap /= 3;
     }
   }
@@ -371,12 +371,12 @@ public class Sorts {
 
   public static void QuickSort(FancyIntegerArray fia) {
     QuickSortRecurse(fia, 0, fia.length());
+    InsertionSort(fia);
   }
   private static void QuickSortRecurse(final FancyIntegerArray fia,
                                        final int left, final int right) {
     final int tolerance = 8;  // Smaller than this will get insertion sorted.
     if (right - left < tolerance) {
-      InsertionSort(fia, left, right);
       return;
     }
 
