@@ -72,9 +72,9 @@ public class FancyIntegerArray extends Canvas implements Runnable {
       graphics.dispose();
       strategy.show();
 
-      final int FPS_REPORT_INTERVAL = 100;  // in frames, not seconds
+      final int FPS_REPORT_INTERVAL = 0;  // in frames, not seconds
       frames++;
-      if (frames % FPS_REPORT_INTERVAL == 0) {
+      if (FPS_REPORT_INTERVAL > 0 && frames % FPS_REPORT_INTERVAL == 0) {
         long currentTime = System.currentTimeMillis();
         System.out.println("FPS: " + (1000 * FPS_REPORT_INTERVAL / (currentTime - lastFpsUpdate)));
         lastFpsUpdate = currentTime;
