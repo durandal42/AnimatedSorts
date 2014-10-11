@@ -225,16 +225,22 @@ public class Sorts {
     int i = 0;
     int k = fia.length() - 1;
     while (i < k) {
+      // Find both the min and max...
       int min = i;
       int max = i;
       for (int j = i + 1; j <= k; j++) {
         if (fia.compare(min, j)) min = j;
         if (fia.compare(j, max)) max = j;
       }
-      fia.swap(min, i);
 
-      if (max == i) fia.swap(min, k);
-      else fia.swap(max, k);
+      // ... and swap them into place.a      
+      fia.swap(min, i);
+      if (max == i) {
+        fia.swap(min, k);
+      } else { 
+        fia.swap(max, k);
+      }
+
       i++;
       k--;
     }
