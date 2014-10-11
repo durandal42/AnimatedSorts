@@ -90,9 +90,10 @@ public class Sorts {
   }
 
   public static void CountingSort(FancyIntegerArray fia) {
-    FancyIntegerArray counts = new FancyIntegerArray(fia.height(),
-                                                     10 * fia.length() /  fia.height(),
-                                                     "element counts");
+    FancyIntegerArray counts = new FancyIntegerArray(
+        fia.height(),  // how many possible values are in the data
+        10 * fia.length() / fia.height(),  // generous estimate of max count
+        "element counts");
     for (int i = 0; i < fia.height(); i++) {
       counts.write(i, 0);
     }
