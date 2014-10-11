@@ -377,13 +377,10 @@ public class Sorts {
   }
 
   public static void RadixSort(FancyIntegerArray fia) {
-    final int MODULUS = 2;
+    int digits = (int) Math.ceil(Math.log(fia.height()) / Math.log(2));
 
-    int digits = (int) Math.ceil(Math.log(fia.height()) / Math.log(MODULUS));
-
-
-    FiaIntegerBin[] bins = new FiaIntegerBin[MODULUS];
-    for(int i = 0 ; i < MODULUS ; i++)
+    FiaIntegerBin[] bins = new FiaIntegerBin[2];
+    for(int i = 0 ; i < 2 ; i++)
       bins[i] = new FiaIntegerBin(fia, i);
 
     for(int i = 0 ; i < digits ; i++) {
@@ -391,9 +388,9 @@ public class Sorts {
       int count = 0;
       for(int j = 0 ; j < fia.length() ; j++) {
         int x = fia.read(j);
-        bins[nthRadix(x, i, MODULUS)].add(x);
+        bins[nthRadix(x, i)].add(x);
       }
-      for (int j = 0; j < MODULUS; j++)
+      for (int j = 0; j < 2; j++)
         while(!bins[j].isEmpty())
           fia.write(count++, bins[j].remove());
     }
@@ -402,8 +399,8 @@ public class Sorts {
       bin.destroy();
     }
   }
-  private static int nthRadix(int x, int n, int modulus) {
-    return (int)(x / Math.pow(modulus, n)) % modulus;
+  private static int nthRadix(int x, int n) {
+    return (int)(x / Math.pow(2, n)) % 2;
   }
   private static class FiaIntegerBin {
     FancyIntegerArray data;
