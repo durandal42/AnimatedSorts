@@ -74,6 +74,22 @@ public class Sorts {
     }
   }
 
+  public static void CombSort(FancyIntegerArray fia) {
+    // Bubble-like sort that compares by progressively smaller gaps.
+    final float SHRINKFACTOR = 1.3f;
+    boolean flipped = false;
+    int gap = fia.length();
+    while (flipped || (gap > 1)) {
+      gap = Math.max(1, (int) ((float) gap / SHRINKFACTOR));
+      flipped = false;
+      for (int i = 0; i + gap < fia.length(); i++) {
+        if (fia.compareAndSwap(i, i + gap)) {
+          flipped = true;
+        }
+      }
+    } 
+  }
+
   public static void SelectionSort(FancyIntegerArray fia) {
     for(int i = fia.length()-1 ; i > 0 ; i--) {
       // find the ith largest element...
@@ -260,27 +276,6 @@ public class Sorts {
         fia.swap(j, j - gap);
       }
     }
-  }
-
-  public static void CombSort(FancyIntegerArray fia) {
-    final float SHRINKFACTOR = (float)1.3;
-    boolean flipped = false;
-    int top;
-    int i, j;
-    int gap = fia.length();
-    do {
-      gap = (int) ((float) gap / SHRINKFACTOR);
-      if (gap < 1) gap = 1;
-      flipped = false;
-      top = fia.length() - gap;
-      for (i = 0; i < top; i++) {
-        j = i + gap;
-        if (fia.compare(i,j)) {
-          fia.swap(i, j);
-          flipped = true;
-        }
-      }
-    } while (flipped || (gap > 1));
   }
 
   public static void ShellSort(FancyIntegerArray fia) {
