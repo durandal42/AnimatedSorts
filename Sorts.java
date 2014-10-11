@@ -379,9 +379,9 @@ public class Sorts {
   public static void RadixSort(FancyIntegerArray fia) {
     int digits = (int) Math.ceil(Math.log(fia.height()) / Math.log(2));
 
-    FiaIntegerBin[] bins = new FiaIntegerBin[2];
+    FiaQueue[] bins = new FiaQueue[2];
     for(int i = 0 ; i < 2 ; i++)
-      bins[i] = new FiaIntegerBin(fia, i);
+      bins[i] = new FiaQueue(fia, i);
 
     for(int i = 0 ; i < digits ; i++) {
       System.out.println("Starting radix pass " + i + " of " + digits);
@@ -395,16 +395,17 @@ public class Sorts {
           fia.write(count++, bins[j].remove());
     }
 
-    for (FiaIntegerBin bin : bins) {
+    for (FiaQueue bin : bins) {
       bin.destroy();
     }
   }
   private static int nthRadix(int x, int n) {
     return (int)(x / Math.pow(2, n)) % 2;
   }
-  private static class FiaIntegerBin {
+  private static class FiaQueue {
+    // FIA-backed fixed-capacity FIFO queue.
     FancyIntegerArray data;
-    public FiaIntegerBin(FancyIntegerArray parent, int i) {
+    public FiaQueue(FancyIntegerArray parent, int i) {
       data = new FancyIntegerArray(parent.length(), parent.height(),
                                    "Radix scratch buffer #" + i);
     }
