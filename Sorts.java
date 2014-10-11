@@ -379,50 +379,72 @@ public class Sorts {
   public static void RadixSort(FancyIntegerArray fia) {
     int digits = (int) Math.ceil(Math.log(fia.height()) / Math.log(2));
 
-    FiaQueue[] bins = new FiaQueue[2];
-    for(int i = 0 ; i < 2 ; i++)
-      bins[i] = new FiaQueue(fia, i);
+    FiaPartition partition = new FiaPartition(fia.length(), fia.height());
 
     for(int i = 0 ; i < digits ; i++) {
       System.out.println("Starting radix pass " + i + " of " + digits);
       int count = 0;
       for(int j = 0 ; j < fia.length() ; j++) {
         int x = fia.read(j);
-        bins[nthRadix(x, i)].add(x);
+        partition.add(nthRadix(x, i), x);
       }
-      for (int j = 0; j < 2; j++)
-        while(!bins[j].isEmpty())
-          fia.write(count++, bins[j].remove());
+      for (int j = 0; j < 2; j++) {
+        while(!partition.isEmpty(j)) {
+          fia.write(count++, partition.remove(j));
+        }
+      }
+      partition.clear();
     }
 
-    for (FiaQueue bin : bins) {
-      bin.destroy();
-    }
+    partition.destroy();
   }
   private static int nthRadix(int x, int n) {
     return (int)(x / Math.pow(2, n)) % 2;
   }
-  private static class FiaQueue {
-    // FIA-backed fixed-capacity FIFO queue.
+  private static class FiaPartition {
+    // FIA-backed partition for a fixed number of elements.
+    // Each partition can be treated as a FIFO queue.
     FancyIntegerArray data;
-    public FiaQueue(FancyIntegerArray parent, int i) {
-      data = new FancyIntegerArray(parent.length(), parent.height(),
-                                   "Radix scratch buffer #" + i);
+
+    int leftMin, leftMax, rightMin, rightMax;
+ 
+    public FiaPartition(int length, int height) {
+      data = new FancyIntegerArray(length, height, "partition buffer");
+      clear();
     }
-    int left = 0;
-    int right = 0;
-    void add(int x) {
-      data.write(right++, x);
-      right %= data.length();
+
+    void add(int p, int x) {
+      if (p == 0) {
+        data.write(leftMax++, x);
+      } else {
+        data.write(--rightMax, x);
+      }
     }
-    int remove() {
-      int result = data.read(left++);
-      left %= data.length();
-      return result;
+
+    int remove(int p) {
+      if (p == 0) {
+        return data.read(leftMin++);
+      } else {
+        return data.read(--rightMin);
+      }
     }
-    boolean isEmpty() {
-      return left == right;
+
+    boolean isEmpty(int p) {
+      if (p == 0) {
+        return (leftMin == leftMax);
+      } else {
+        return (rightMin == rightMax);
+      }
     }
+
+    void clear() {
+      leftMin = 0;
+      leftMax = 0;
+      rightMin = data.length();
+      rightMax = data.length();
+      System.out.println("clear called");
+    }
+
     void destroy() {
       data.destroy();
     }
