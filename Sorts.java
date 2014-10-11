@@ -2,6 +2,10 @@ import java.util.concurrent.*;
 
 public class Sorts {
 
+  static void log(String s) {
+    System.out.println(s);
+  }
+
   // For multi-threaded sorts:
   static ExecutorService threadPool = Executors.newCachedThreadPool();
 
@@ -55,6 +59,7 @@ public class Sorts {
 
   public static void ExchangeSort(FancyIntegerArray fia) {
     for (int i = 0 ; i < fia.length() - 1 ; i++) {
+      log("ExchangeSort: finding the " + i + "th smallest element (of " + fia.length() + ")...");
       // find the ith smallest element...
       for(int j = i + 1 ; j < fia.length() ; j++) {
         // ... by doing a CompareAndSwap on everything after it
@@ -65,6 +70,8 @@ public class Sorts {
 
   public static void BubbleSort(FancyIntegerArray fia) {
     for(int i = fia.length() - 1 ; i > 0 ; i--) {
+      log("BubbleSort: bubbling up to find the " + (fia.length() - i - 1) +
+          "th largest element (of " + fia.length() + ")...");
       // find the ith largest element...
       for(int j = 0 ; j < i ; j++) {
         // ... by bubbling it up to the end...
@@ -79,8 +86,10 @@ public class Sorts {
     final float SHRINKFACTOR = 1.3f;
     boolean flipped = false;
     int gap = fia.length();
+    int passes = 0;
     while (flipped || (gap > 1)) {
       gap = Math.max(1, (int) ((float) gap / SHRINKFACTOR));
+      log("CombSort: pass " + (passes++) + ", with gap = " + gap);
       flipped = false;
       for (int i = 0; i + gap < fia.length(); i++) {
         if (fia.compareAndSwap(i, i + gap)) {
@@ -92,6 +101,8 @@ public class Sorts {
 
   public static void SelectionSort(FancyIntegerArray fia) {
     for(int i = fia.length()-1 ; i > 0 ; i--) {
+      log("SelectionSort: finding the " + (fia.length() - i - 1) + "the largest element (of " +
+          fia.length() + ")...");
       // find the ith largest element...
       int maxIndex = 0;
       for(int j = 1 ; j <= i ; j++) {
@@ -110,13 +121,19 @@ public class Sorts {
         fia.height(),  // how many possible values are in the data
         10 * fia.length() / fia.height(),  // generous estimate of max count
         "element counts");
+
+    log("CountingSort: zeroing counts.");
     for (int i = 0; i < fia.height(); i++) {
       counts.write(i, 0);
     }
+
+    log("CountingSort: counting elements.");
     for (int i = 0; i < fia.length(); i++) {
       int val = fia.read(i);
       counts.write(val, counts.read(val) + 1);
     }
+
+    log("CountingSort: writing counted elements back into array.");
     for (int i = 0, j = 0; i < fia.height(); i++) {
       for (int count = counts.read(i); count > 0; count--) {
         fia.write(j++, i);
@@ -125,11 +142,31 @@ public class Sorts {
     counts.destroy();
   }
 
+  static int maxDepthReached;
+  static int minDepthReturned;
+  static void resetDepth() {
+    maxDepthReached = Integer.MIN_VALUE;
+    minDepthReturned = Integer.MAX_VALUE;
+  }
+  static void depthReached(int depth, String label) {
+    if (depth > maxDepthReached) {
+      log(label + ": new maximum depth reached: " + depth);
+      maxDepthReached = depth;
+    }
+  }
+  static void depthReturned(int depth, String label) {
+    if (depth < minDepthReturned) {
+      log(label + ": new minimum depth returned from: " + depth);
+      minDepthReturned = depth;
+    }
+  }
+
   public static void MergeSort(FancyIntegerArray fia) {
     FancyIntegerArray scratch = new FancyIntegerArray(
         fia.length(), fia.height(), "merge scratch buffer");
+    resetDepth();
     // Recurse on the entire array.
-    boolean resultInScratch = MergeSortRecurse(fia, 0, fia.length(), scratch);
+    boolean resultInScratch = MergeSortRecurse(fia, 0, fia.length(), scratch, 0);
     if (resultInScratch) {
       FancyIntegerArray.memcp(scratch, 0,
                               fia, 0,
@@ -141,7 +178,10 @@ public class Sorts {
   // Returns whether the sorted data is now in the provided scratch buffer.
   private static boolean MergeSortRecurse(final FancyIntegerArray fia,
                                           final int left, final int right,
-                                          final FancyIntegerArray scratch) {
+                                          final FancyIntegerArray scratch,
+                                          final int depth) {
+    depthReached(depth, "MergeSort");
+
     if (right - left <= 1) {
       // A single element is (or no elements are) already sorted.
       return false;  // Assume data in source.
@@ -152,12 +192,12 @@ public class Sorts {
     // Recursively sort each half.
     Future<Boolean> leftDone = run(new Callable<Boolean>() {
       public Boolean call() {
-        return MergeSortRecurse(fia, left, mid, scratch);
+        return MergeSortRecurse(fia, left, mid, scratch, depth + 1);
       }
     });
     Future<Boolean> rightDone = run(new Callable<Boolean>() {
       public Boolean call() {
-        return MergeSortRecurse(fia, mid, right, scratch);
+        return MergeSortRecurse(fia, mid, right, scratch, depth + 1);
       }
     });
     // Recursive calls tell us where their results are stored.
@@ -192,6 +232,7 @@ public class Sorts {
 
     if (mergeFrom.compare(mid, mid - 1)) {
       // The entire first half is less than the entire right half; no need to merge.
+      depthReturned(depth, "MergeSort");
       return leftInScratch;  // We didn't actually move the data.
     }
 
@@ -217,6 +258,7 @@ public class Sorts {
       mergeTo.write(k++, mergeFrom.read(j++));
     }
 
+    depthReturned(depth, "MergeSort");
     return !leftInScratch;
   }
 
@@ -229,11 +271,13 @@ public class Sorts {
           right--;
         }
       }
+      log("BidirectionalBubbleSort: remaining gap: " + (right - left));
       for (int j = right - 1; j > left; j--) {
         if (!fia.compareAndSwap(j-1, j) && j-1 == left) {
           left++;
         }
       }
+      log("BidirectionalBubbleSort: remaining gap: " + (right - left));
     }
   }
 
@@ -414,7 +458,7 @@ public class Sorts {
     FiaPartition partition = new FiaPartition(fia.length(), fia.height());
 
     for(int i = 0 ; i < digits ; i++) {
-      System.out.println("Starting radix pass " + i + " of " + digits);
+      log("Starting radix pass " + i + " of " + digits);
       int count = 0;
       for(int j = 0 ; j < fia.length() ; j++) {
         int x = fia.read(j);
@@ -475,7 +519,7 @@ public class Sorts {
       leftMax = 0;
       rightMin = data.length();
       rightMax = data.length();
-      System.out.println("clear called");
+      log("clear called");
     }
 
     void destroy() {
