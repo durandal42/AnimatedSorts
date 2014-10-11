@@ -249,9 +249,11 @@ public class Sorts {
   public static void InsertionSort(FancyIntegerArray fia) {
     InsertionSort(fia, 0, fia.length());
   }
+  // For use in recursive sorts that use InsertionSort on small problems.
   public static void InsertionSort(FancyIntegerArray fia, int left, int right) {
     InsertionSort(fia, left, right, 1);
   }
+  // For use in ShellSort.
   public static void InsertionSort(FancyIntegerArray fia, int left, int right, int gap) {
     for (int i = left + gap; i < right; i++) {
       for (int j = i; (j >= gap) && (fia.compare(j - gap, j)); j -= gap) {
