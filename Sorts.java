@@ -84,6 +84,29 @@ public class Sorts {
     }
   }
 
+  public static void BidirectionalBubbleSort(FancyIntegerArray fia) {
+    // Bubble-like sort that alternates passes in each direction.
+    int left = 0;
+    int right = fia.length();
+    while (left < right) {
+      log("BidirectionalBubbleSort: right pass: remaining gap: " + (right - left));
+      int lastTouched = left;
+      for (int j = left; j < right - 1; j++) {
+        if (fia.compareAndSwap(j, j+1)) {
+          lastTouched = j+1;
+        }
+      }
+      right = lastTouched;
+      log("BidirectionalBubbleSort: left pass: remaining gap: " + (right - left));
+      for (int j = right - 1; j > left; j--) {
+        if (fia.compareAndSwap(j-1, j)) {
+          lastTouched = j;
+        }
+      }
+      left = lastTouched;
+    }
+  }
+
   public static void CombSort(FancyIntegerArray fia) {
     // Bubble-like sort that compares by progressively smaller gaps.
     final float SHRINKFACTOR = 1.3f;
@@ -263,25 +286,6 @@ public class Sorts {
 
     depthReturned(depth, "MergeSort");
     return !leftInScratch;
-  }
-
-  public static void BidirectionalBubbleSort(FancyIntegerArray fia) {
-    int left = 0;
-    int right = fia.length();
-    while (left < right) {
-      for (int j = left; j < right - 1; j++) {
-        if (!fia.compareAndSwap(j, j+1) && j+1 == right - 1) {
-          right--;
-        }
-      }
-      log("BidirectionalBubbleSort: remaining gap: " + (right - left));
-      for (int j = right - 1; j > left; j--) {
-        if (!fia.compareAndSwap(j-1, j) && j-1 == left) {
-          left++;
-        }
-      }
-      log("BidirectionalBubbleSort: remaining gap: " + (right - left));
-    }
   }
 
   public static void ShakerSort(FancyIntegerArray fia) {
