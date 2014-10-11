@@ -205,9 +205,8 @@ public class Sorts {
   }
 
   public static void BidirectionalBubbleSort(FancyIntegerArray fia) {
-    BidirectionalBubbleSort(fia, 0, fia.length());
-  }
-  public static void BidirectionalBubbleSort(FancyIntegerArray fia, int left, int right) {
+    int left = 0;
+    int right = fia.length();
     while (left < right) {
       for (int j = left; j < right - 1; j++) {
         if (!fia.compareAndSwap(j, j+1) && j+1 == right - 1) {
