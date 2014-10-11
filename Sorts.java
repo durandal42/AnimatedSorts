@@ -5,7 +5,7 @@ public class Sorts {
   // For multi-threaded sorts:
   static ExecutorService threadPool = Executors.newCachedThreadPool();
 
-  static boolean PARALLEL = false;
+  static boolean PARALLEL = true;
 
   static <V> Future<V> run(Callable<V> c) {
     return threadPool.submit(c);
