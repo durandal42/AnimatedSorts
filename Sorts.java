@@ -8,7 +8,35 @@ public class Sorts {
   static boolean PARALLEL = true;
 
   static <V> Future<V> run(Callable<V> c) {
-    return threadPool.submit(c);
+    if (PARALLEL) {
+      return threadPool.submit(c);
+    } else {
+      try {
+        final V result = c.call();
+        return new Future<V>() {
+          public V get() {
+            return result;  // return pre-calculated result.
+          }
+          public V get(long l, TimeUnit tu) {
+            return result;  // return pre-calculated result.
+          }
+          public boolean isDone() {
+            return true;  // already completed.
+          }
+          public boolean isCancelled() {
+              // by the time this future exists, there is nothing to cancel.
+              return false;
+          }
+          public boolean cancel(boolean mayInterruptIfRunning) {
+            return false;  // already completed.
+          }
+        };
+      } catch (Exception e) {
+        e.printStackTrace();
+        System.exit(0);
+      }
+    }
+    return null;  // this should never happen.
   }
 
   // Call get on a Future, and swallow any exceptions.
