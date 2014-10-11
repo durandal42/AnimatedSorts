@@ -386,24 +386,25 @@ public class Sorts {
       int count = 0;
       for(int j = 0 ; j < fia.length() ; j++) {
         int x = fia.read(j);
-        partition.add(nthRadix(x, i), x);
+        partition.add(getNthBit(x, i), x);
       }
-      for (int j = 0; j < 2; j++) {
-        while(!partition.isEmpty(j)) {
-          fia.write(count++, partition.remove(j));
-        }
+      while(!partition.isEmpty(true)) {
+        fia.write(count++, partition.remove(true));
+      }
+      while(!partition.isEmpty(false)) {
+        fia.write(count++, partition.remove(false));
       }
       partition.clear();
     }
 
     partition.destroy();
   }
-  private static int nthRadix(int x, int n) {
-    return (int)(x / Math.pow(2, n)) % 2;
+  private static boolean getNthBit(int x, int n) {
+    return ((x & (1 << n)) != 0);
   }
   private static class FiaPartition {
     // FIA-backed partition for a fixed number of elements.
-    // Each partition can be treated as a FIFO queue.
+    // Elements removed in FIFO order.
     FancyIntegerArray data;
 
     int leftMin, leftMax, rightMin, rightMax;
@@ -413,24 +414,24 @@ public class Sorts {
       clear();
     }
 
-    void add(int p, int x) {
-      if (p == 0) {
+    void add(boolean p, int x) {
+      if (p) {
         data.write(leftMax++, x);
       } else {
         data.write(--rightMax, x);
       }
     }
 
-    int remove(int p) {
-      if (p == 0) {
+    int remove(boolean p) {
+      if (p) {
         return data.read(leftMin++);
       } else {
         return data.read(--rightMin);
       }
     }
 
-    boolean isEmpty(int p) {
-      if (p == 0) {
+    boolean isEmpty(boolean p) {
+      if (p) {
         return (leftMin == leftMax);
       } else {
         return (rightMin == rightMax);
