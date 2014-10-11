@@ -324,6 +324,8 @@ public class Sorts {
   // For use in ShellSort.
   public static void InsertionSort(FancyIntegerArray fia, int left, int right, int gap) {
     for (int i = left + gap; i < right; i++) {
+      log("InsertionSort: " + (i - left) + " of " + (right - left) + " elements are sorted" +
+          (gap > 1 ? "with a gap of " + gap : ""));
       for (int j = i; (j >= gap) && (fia.compare(j - gap, j)); j -= gap) {
         fia.swap(j, j - gap);
       }
