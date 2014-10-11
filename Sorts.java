@@ -289,27 +289,28 @@ public class Sorts {
   }
 
   public static void ShakerSort(FancyIntegerArray fia) {
-    int i = 0;
-    int k = fia.length() - 1;
-    while (i < k) {
+    int left = 0;
+    int right = fia.length() - 1;
+    while (left < right) {
+      log("ShakerSort: remaining gap: " + (right - left));
       // Find both the min and max...
-      int min = i;
-      int max = i;
-      for (int j = i + 1; j <= k; j++) {
+      int min = left;
+      int max = left;
+      for (int j = left + 1; j <= right; j++) {
         if (fia.compare(min, j)) min = j;
         if (fia.compare(j, max)) max = j;
       }
 
-      // ... and swap them into place.a      
-      fia.swap(min, i);
-      if (max == i) {
-        fia.swap(min, k);
+      // ... and swap them into place.
+      fia.swap(min, left);
+      if (max == left) {
+        fia.swap(min, right);
       } else { 
-        fia.swap(max, k);
+        fia.swap(max, right);
       }
 
-      i++;
-      k--;
+      left++;
+      right--;
     }
   }
 
