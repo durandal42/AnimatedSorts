@@ -112,7 +112,7 @@ public class Sorts {
   public static void MergeSort(FancyIntegerArray fia) {
     FancyIntegerArray scratch = new FancyIntegerArray(
         fia.length(), fia.height(), "merge scratch buffer");
-    // recurse on the entire array
+    // Recurse on the entire array.
     boolean resultInScratch = MergeSortRecurse(fia, 0, fia.length(), scratch);
     if (resultInScratch) {
       FancyIntegerArray.memcp(scratch, 0,
@@ -121,13 +121,16 @@ public class Sorts {
     }
     scratch.destroy();
   }
+  // Assume that the data to be sorted is in the source buffer.
+  // Returns whether the sorted data is now in the provided scratch buffer.
   private static boolean MergeSortRecurse(final FancyIntegerArray fia,
                                           final int left, final int right,
                                           final FancyIntegerArray scratch) {
     if (right - left <= 1) {
       // A single element is (or no elements are) already sorted.
-      return false;
+      return false;  // Assume data in source.
     }
+
     final int mid = (left + right) / 2;
 
     // Recursively sort each half.
@@ -141,6 +144,7 @@ public class Sorts {
         return MergeSortRecurse(fia, mid, right, scratch);
       }
     });
+    // Recursive calls tell us where their results are stored.
     boolean leftInScratch = join(leftDone);
     boolean rightInScratch = join(rightDone);
 
@@ -162,16 +166,17 @@ public class Sorts {
     }
     // left and right are now in the same place.
 
-    FancyIntegerArray src = fia;
-    FancyIntegerArray dest = scratch;
+    FancyIntegerArray mergeFrom = fia;
+    FancyIntegerArray mergeTo = scratch;
     if (leftInScratch) {
-      src = scratch;
-      dest = fia;
+      // Data is in scratch; merge it back into source buffer.
+      mergeFrom = scratch;
+      mergeTo = fia;
     }
 
-    if (src.compare(mid, mid - 1)) {
+    if (mergeFrom.compare(mid, mid - 1)) {
       // The entire first half is less than the entire right half; no need to merge.
-      //return;
+      return leftInScratch;  // We didn't actually move the data.
     }
 
     // begin merge...
@@ -181,26 +186,22 @@ public class Sorts {
 
     while (i < mid && j < right) {
       // Pick the smaller and put it into the array.
-      if (src.compare(i, j)) {
-        dest.write(k++, src.read(j++));
+      if (mergeFrom.compare(i, j)) {
+        mergeTo.write(k++, mergeFrom.read(j++));
       } else {
-        dest.write(k++, src.read(i++));
+        mergeTo.write(k++, mergeFrom.read(i++));
       }
     }
 
     // Copy remainder of other sub-array without comparing.
     while (i < mid) {
-      dest.write(k++, src.read(i++));
+      mergeTo.write(k++, mergeFrom.read(i++));
     }
     while (j < right) {
-      dest.write(k++, src.read(j++));
+      mergeTo.write(k++, mergeFrom.read(j++));
     }
 
     return !leftInScratch;
-    // Write the merged array back into the fia.
-//    FancyIntegerArray.memcp(scratch, left,
-//                            fia, left,
-//                            right - left);
   }
 
   public static void BidirectionalBubbleSort(FancyIntegerArray fia) {
