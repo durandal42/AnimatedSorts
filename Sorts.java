@@ -70,14 +70,17 @@ public class Sorts {
 
   public static void BubbleSort(FancyIntegerArray fia) {
     for(int i = fia.length() - 1 ; i > 0 ; i--) {
-      log("BubbleSort: bubbling up to find the " + (fia.length() - i - 1) +
-          "th largest element (of " + fia.length() + ")...");
+      log("BubbleSort: " + (i+1) + " elements remain to be sorted");
       // find the ith largest element...
+      int lastTouched = 0;
       for(int j = 0 ; j < i ; j++) {
         // ... by bubbling it up to the end...
         // if any two adjacent elements are out of order, swap them
-        fia.compareAndSwap(j, j+1);
+        if (fia.compareAndSwap(j, j+1)) {
+          lastTouched = j+1;  // remember the last element we actually touched...
+        }
       }
+      i = lastTouched;  // ... and narrow future passes, knowing everything past it is sorted.
     }
   }
 
