@@ -545,11 +545,17 @@ public class Sorts {
 
   public static void SillySort(FancyIntegerArray fia) {
     int count = 0;
+    int mostFailures = 0;
+    log("SillySort: randomly CompareAndSwapping until " + fia.length() + " consecutive failures.");
     while(count++ < fia.length()) {
       int i = (int) (Math.random() * (double) fia.length());
       int j = (int) (Math.random() * (double) fia.length());
       if ((i > j && fia.compareAndSwap(j,i)) ||
           (i < j && fia.compareAndSwap(i,j))) {
+        if (count > mostFailures) {
+          log("SillySort: " + count + " failed CompareAndSwaps before a success.");
+          mostFailures = count;
+        }
         count = 0;
       }
     }
