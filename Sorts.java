@@ -351,28 +351,34 @@ public class Sorts {
   // Assuming that the heap-property already holds for the subtree rooted at index root,
   // except for the root itself, push the root down into the subtree such that the heap-property
   // holds for the root as well.
+  // Heap-indexing logic is easier with a 1-based backing array, so note that all array accesses
+  // are -1 from what you might expect.
   private static void HeapSortPush(FancyIntegerArray fia, int root, int limit) {
-    while (root <= limit/2) {
-      int j = 2 * root;
-      if ((j < limit) && (fia.compare(j, j-1))) {
-        j++;  // j now points at the larger child
+    while (root <= limit / 2) {  // Any higher, and root is actually a leaf.
+      int child = 2 * root;  // root's left child.
+      if (child < limit && fia.compare(child, child - 1)) {
+        child++;  // root's right child.
       }
-      if (fia.compare(root-1, j-1)) {
-        break;  // heap property holds
-      }
-      else {
-        fia.swap(root-1, j-1);  // swap with larger child
-        root = j;
+      // child is now the larger child of root.
+      if (fia.compareAndSwap(child - 1, root - 1)) {
+        root = child;
+        // We've pushed root down, swapping with its larger child;
+        // Next time around the loop will enforce the heap-property for that child.
+      } else {
+        break;  // If no swap was needed, the heap-property already holds.
       }
     }
   }
 
   public static void QuickSort(FancyIntegerArray fia) {
-    QuickSortRecurse(fia, 0, fia.length());
+    resetDepth();
+    QuickSortRecurse(fia, 0, fia.length(), 0);
     InsertionSort(fia);
   }
   private static void QuickSortRecurse(final FancyIntegerArray fia,
-                                       final int left, final int right) {
+                                       final int left, final int right,
+                                       final int depth) {
+    depthReached(depth, "QuickSort");
     final int TOLERANCE = 8;  // Smaller than this will get insertion sorted.
     if (right - left < TOLERANCE) {
       return;
@@ -383,13 +389,13 @@ public class Sorts {
     // Recursively sort each half.
     Future<Void> leftDone = run(new Callable<Void>() {
       public Void call() {
-        QuickSortRecurse(fia, left, pivot);
+        QuickSortRecurse(fia, left, pivot, depth + 1);
         return null;
       }
     });
     Future<Void> rightDone = run(new Callable<Void>() {
       public Void call() {
-        QuickSortRecurse(fia, pivot + 1, right);
+        QuickSortRecurse(fia, pivot + 1, right, depth + 1);
         return null;
       }
     });
