@@ -337,31 +337,32 @@ public class Sorts {
   }
 
   public static void HeapSort(FancyIntegerArray fia) {
-    int n = fia.length();
-    log("HeapSort: heapifying...")
-    for (int k = n/2; k > 0; k--) {
-      HeapSortPush(fia, k, n);
+    log("HeapSort: heapifying...");
+    for (int i = fia.length() / 2; i > 0; i--) {
+      HeapSortPush(fia, i, fia.length());
     }
-    log("HeapSort: popping from the heap...")
-    // Repeatedly extract highest and swap to end.
-    do {
-      fia.swap(0, --n);
-      HeapSortPush(fia, 1, n);
-    } while (n > 1);
+    log("HeapSort: popping from the heap...");
+    for (int i = fia.length() - 1; i > 0; i--) {
+      fia.swap(0, i);
+      HeapSortPush(fia, 1, i);
+    }
   }
 
-  private static void HeapSortPush(FancyIntegerArray fia, int k, int n) {
-    while (k <= n/2) {
-      int j = 2 * k;
-      if ((j < n) && (fia.compare(j, j-1))) {
+  // Assuming that the heap-property already holds for the subtree rooted at index root,
+  // except for the root itself, push the root down into the subtree such that the heap-property
+  // holds for the root as well.
+  private static void HeapSortPush(FancyIntegerArray fia, int root, int limit) {
+    while (root <= limit/2) {
+      int j = 2 * root;
+      if ((j < limit) && (fia.compare(j, j-1))) {
         j++;  // j now points at the larger child
       }
-      if (fia.compare(k-1, j-1)) {
+      if (fia.compare(root-1, j-1)) {
         break;  // heap property holds
       }
       else {
-        fia.swap(k-1, j-1);  // swap with larger child
-        k = j;
+        fia.swap(root-1, j-1);  // swap with larger child
+        root = j;
       }
     }
   }
