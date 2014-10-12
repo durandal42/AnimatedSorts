@@ -428,24 +428,26 @@ public class Sorts {
 
   public static void BinaryRadixSort(FancyIntegerArray fia) {
     int bit = (int) Math.ceil(Math.log(fia.height()) / Math.log(2));
-    BinaryRadixSortRecurse(fia, 0, fia.length(), bit-1);
+    resetDepth();
+    BinaryRadixSortRecurse(fia, 0, fia.length(), bit - 1, 0);
   }
   public static void BinaryRadixSortRecurse(final FancyIntegerArray fia,
                                             final int left, final int right,
-                                            final int bit) {
+                                            final int bit,
+                                            final int depth) {
+    depthReached(depth, "BinaryRadixSort");
     if (bit < 0) return;
     if (right - left <= 1) return;
     final int pivot = BinaryRadixSortPartition(fia, left, right, bit);
     Future<Void> leftDone = run(new Callable<Void>() {
             public Void call() {
-                BinaryRadixSortRecurse(fia, left, pivot, bit-1);
+                BinaryRadixSortRecurse(fia, left, pivot, bit - 1, depth + 1);
                 return null;
             }
         });
-    join(leftDone);  // If *after* the second recursive call, will parallelize.
     Future<Void> rightDone = run(new Callable<Void>() {
             public Void call() {
-                BinaryRadixSortRecurse(fia, pivot, right, bit-1);
+                BinaryRadixSortRecurse(fia, pivot, right, bit - 1, depth + 1);
                 return null;
             }
         });
