@@ -317,16 +317,8 @@ public class Sorts {
   public static void InsertionSort(FancyIntegerArray fia) {
     for (int i = 1; i < fia.length(); i++) {
       log("InsertionSort: " + i + " of " + fia.length() + " elements are sorted");
-      for (int j = i; (j >= 1) && (fia.compare(j - 1, j)); j -= 1) {
-        fia.swap(j, j - 1);
-      }
-    }
-  }
-  // For use in ShellSort.
-  public static void InsertionSortWithGap(FancyIntegerArray fia, int gap) {
-    for (int i = gap; i < fia.length(); i++) {
-      for (int j = i; (j >= gap) && (fia.compare(j - gap, j)); j -= gap) {
-        fia.swap(j, j - gap);
+      for (int j = i; j >= 1; j--) {
+        if (!fia.compareAndSwap(j - 1, j)) break;
       }
     }
   }
@@ -335,28 +327,33 @@ public class Sorts {
     int gap = fia.length() / 3;
     while(gap > 0) {
       log("ShellSort: InsertionSorting with a gap of: " + gap);
-      InsertionSortWithGap(fia, gap);
+      for (int i = gap; i < fia.length(); i++) {
+        for (int j = i; j >= gap; j -= gap) {
+         if (!fia.compareAndSwap(j - gap, j)) break;
+        }
+      }
       gap /= 3;
     }
   }
 
   public static void HeapSort(FancyIntegerArray fia) {
-    int N = fia.length();
-    // Heapify.
-    for (int k = N/2; k > 0; k--) {
-      HeapSortPush(fia, k, N);
+    int n = fia.length();
+    log("HeapSort: heapifying...")
+    for (int k = n/2; k > 0; k--) {
+      HeapSortPush(fia, k, n);
     }
+    log("HeapSort: popping from the heap...")
     // Repeatedly extract highest and swap to end.
     do {
-      fia.swap(0, --N);
-      HeapSortPush(fia, 1, N);
-    } while (N > 1);
+      fia.swap(0, --n);
+      HeapSortPush(fia, 1, n);
+    } while (n > 1);
   }
 
-  private static void HeapSortPush(FancyIntegerArray fia, int k, int N) {
-    while (k <= N/2) {
+  private static void HeapSortPush(FancyIntegerArray fia, int k, int n) {
+    while (k <= n/2) {
       int j = 2 * k;
-      if ((j < N) && (fia.compare(j, j-1))) {
+      if ((j < n) && (fia.compare(j, j-1))) {
         j++;  // j now points at the larger child
       }
       if (fia.compare(k-1, j-1)) {
