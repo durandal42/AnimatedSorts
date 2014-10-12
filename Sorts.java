@@ -426,6 +426,9 @@ public class Sorts {
     return pivot;
   }
 
+  private static boolean getNthBit(int x, int n) {
+    return ((x & (1 << n)) != 0);
+  }
   public static void BinaryRadixSort(FancyIntegerArray fia) {
     int bit = (int) Math.ceil(Math.log(fia.height()) / Math.log(2));
     resetDepth();
@@ -458,7 +461,7 @@ public class Sorts {
                                              int left, int right,
                                              int bit) {
     while (left < right) {
-      if ((fia.read(left) & (1 << bit)) != 0) {
+      if (getNthBit(fia.read(left), bit)) {
         fia.swap(left, --right);
       } else {
         left++;
@@ -490,9 +493,6 @@ public class Sorts {
     }
 
     partition.destroy();
-  }
-  private static boolean getNthBit(int x, int n) {
-    return ((x & (1 << n)) != 0);
   }
   private static class FiaPartition {
     // FIA-backed partition for a fixed number of elements.
