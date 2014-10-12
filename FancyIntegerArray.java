@@ -205,8 +205,8 @@ public class FancyIntegerArray extends Canvas implements Runnable {
   }
 
   public void printCounts() {
-    if (readCount > 0)    System.out.println("DisplayState.READs:   \t" + readCount);
-    if (writeCount > 0)   System.out.println("DisplayState.WRITEs:  \t" + writeCount);
+    if (readCount > 0)    System.out.println("Reads:   \t" + readCount);
+    if (writeCount > 0)   System.out.println("Writes:  \t" + writeCount);
     if (compareCount > 0) System.out.println("Compares:\t" + compareCount);
     if (swapCount > 0)    System.out.println("Swaps:   \t" + swapCount);
   }
