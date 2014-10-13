@@ -563,19 +563,24 @@ public class Sorts {
   }
 
   public static void ThreeStoogesSort(FancyIntegerArray fia) {
-    ThreeStoogesRecurse(fia, 0, fia.length());
+    resetDepth();
+    ThreeStoogesRecurse(fia, 0, fia.length(), 0);
   }
-  public static void ThreeStoogesRecurse(FancyIntegerArray fia, int left, int right) {
+  public static void ThreeStoogesRecurse(FancyIntegerArray fia,
+                                         int left, int right,
+                                         int depth) {
+    depthReached(depth, "ThreeStoogesSort");
     if (right - left < 2) return;
     if (right - left == 2) {
       fia.compareAndSwap(left, right - 1);
       return;
     }
-    int pivot1 = left + (right - left)/3;
-    int pivot2 = left + (right - left)*2/3;
-    ThreeStoogesRecurse(fia, left, pivot2);
-    ThreeStoogesRecurse(fia, pivot1, right);
-    ThreeStoogesRecurse(fia, left, pivot2);
+    int pivot1 = left + (right - left) / 3;
+    int pivot2 = left + (right - left) * 2 / 3;
+    ThreeStoogesRecurse(fia, left, pivot2, depth + 1);
+    ThreeStoogesRecurse(fia, pivot1, right, depth + 1);
+    ThreeStoogesRecurse(fia, left, pivot2, depth + 1);
+    depthReturned(depth, "ThreeStoogesSort");
   }
 
 }
