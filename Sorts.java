@@ -483,11 +483,11 @@ public class Sorts {
         int x = fia.read(j);
         partition.add(getNthBit(x, i), x);
       }
-      while(!partition.isEmpty(true)) {
-        fia.write(count++, partition.remove(true));
-      }
       while(!partition.isEmpty(false)) {
         fia.write(count++, partition.remove(false));
+      }
+      while(!partition.isEmpty(true)) {
+        fia.write(count++, partition.remove(true));
       }
       partition.clear();
     }
