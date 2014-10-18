@@ -9,7 +9,7 @@ public class Sorts {
   // For multi-threaded sorts:
   static ExecutorService threadPool = Executors.newCachedThreadPool();
 
-  static boolean PARALLEL = true;
+  static boolean PARALLEL = false;
 
   static <V> Future<V> run(Callable<V> c) {
     if (PARALLEL) {
@@ -373,14 +373,12 @@ public class Sorts {
   public static void QuickSort(FancyIntegerArray fia) {
     resetDepth();
     QuickSortRecurse(fia, 0, fia.length(), 0);
-    InsertionSort(fia);
   }
   private static void QuickSortRecurse(final FancyIntegerArray fia,
                                        final int left, final int right,
                                        final int depth) {
     depthReached(depth, "QuickSort");
-    final int TOLERANCE = 8;  // Smaller than this will get insertion sorted.
-    if (right - left < TOLERANCE) {
+    if (right - left <= 1) {
       return;
     }
 
@@ -401,6 +399,7 @@ public class Sorts {
     });
     join(leftDone);
     join(rightDone);
+    depthReturned(depth, "QuickSort");
   }
   public static int QuickSortSelectPivot(FancyIntegerArray fia, int left, int right) {
     return (left + right) / 2;
