@@ -332,7 +332,7 @@ public class Sorts {
          if (!fia.compareAndSwap(j - gap, j)) break;
         }
       }
-      gap /= 3;
+      gap /= 3; // TODO(dsloan) fix 2/3==0 bug
     }
   }
 
