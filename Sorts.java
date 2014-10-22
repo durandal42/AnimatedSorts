@@ -324,16 +324,16 @@ public class Sorts {
   }
 
   public static void ShellSort(FancyIntegerArray fia) {
-    int gap = fia.length() / 3;
-    while(gap > 0) {
+    int gap = fia.length();
+    do {
+      gap = Math.max(1, gap / 3);
       log("ShellSort: InsertionSorting with a gap of: " + gap);
       for (int i = gap; i < fia.length(); i++) {
         for (int j = i; j >= gap; j -= gap) {
          if (!fia.compareAndSwap(j - gap, j)) break;
         }
       }
-      gap /= 3; // TODO(dsloan) fix 2/3==0 bug
-    }
+    } while (gap != 1);
   }
 
   public static void HeapSort(FancyIntegerArray fia) {
