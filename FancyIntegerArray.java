@@ -1,13 +1,6 @@
 import java.util.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.image.BufferStrategy;
-
-//import java.awt.*;
-//import java.awt.event.*;
-//import java.applet.*;
-//import javax.swing.*;
-
 
 public class FancyIntegerArray extends Canvas implements Runnable {
 
