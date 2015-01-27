@@ -2,7 +2,7 @@ import java.util.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 
-public class FancyIntegerArray implements Runnable {
+public class FancyIntegerArray implements IntegerArray, Runnable {
 
   public static final int MAX_FPS = 100;
   public static final int ENFORCED_DELAY_MS = 1;
@@ -10,19 +10,11 @@ public class FancyIntegerArray implements Runnable {
   private Frame frame;
   private Canvas canvas;
 
-  private int length;
-  private int height;
-  private int[] array;  // actual data.
+  private IntegerArray array;  // actual data.
 
   // flags values that have been read/written since the last graphics update.
   private boolean[] dataRead;
   private boolean[] dataWritten;
-
-  // count how many times certain operations have taken place.
-  private int readCount = 0;
-  private int writeCount = 0;
-  private int compareCount = 0;
-  private int swapCount = 0;
 
   // Sentinel for shutting down display loop.
   private boolean alive = true;
@@ -32,9 +24,7 @@ public class FancyIntegerArray implements Runnable {
   }
 
   public FancyIntegerArray(int length, int height, String name) {
-    this.length = length;
-    this.height = height;
-    array = new int[length];
+    array = new PlainIntegerArray(length, height);
 
     dataRead = new boolean[length];
     dataWritten = new boolean[length];
@@ -94,17 +84,6 @@ public class FancyIntegerArray implements Runnable {
     frame.dispose();
   }
 
-  public void randomize() {
-    Random r = new Random();
-    for (int i = 0; i < length; i++) {
-      write(i, r.nextInt(height));
-    }
-    readCount = 0;
-    writeCount = 0;
-    compareCount = 0;
-    swapCount = 0;
-  }
-
   private void delay() {
     if (ENFORCED_DELAY_MS <= 0) return;
     try {
@@ -115,11 +94,11 @@ public class FancyIntegerArray implements Runnable {
 
   public void paint(Graphics g) {
     g.setColor(Color.black);
-    g.fillRect(0, 0, length + 1, height + 1);
+    g.fillRect(0, 0, array.length() + 1, array.height() + 1);
     g.setColor(Color.white);
-    for (int i = 0; i < length; i++) {
+    for (int i = 0; i < array.length(); i++) {
       if (dataWritten[i]) {
-        g.setColor(Color.red);        
+        g.setColor(Color.red);
       } else if (dataRead[i]) {
         g.setColor(Color.green);        
       } else {
@@ -127,83 +106,50 @@ public class FancyIntegerArray implements Runnable {
       }
       dataRead[i] = false;
       dataWritten[i] = false;
-      g.drawLine(i, height, i, 0);
+      g.drawLine(i, array.height(), i, 0);
     }
 
     g.setColor(Color.white);
-    for (int i = 0; i < length; i++) {
-      g.fillRect(i, height - array[i], 1, 1);
+    for (int i = 0; i < array.length(); i++) {
+      g.fillRect(i, array.height() - array.read(i), 1, 1);
     }
   }
 
   public int read(int i) {
-    readCount++;
     dataRead[i] = true;
     delay();
-    return array[i];
+    return array.read(i);
   }
 
   public void write(int i, int value) {
-    writeCount++;
-    array[i] = value;
+    array.write(i, value);
     dataWritten[i] = true;
     delay();
   }
 
   public boolean compare(int i, int j) {
-    compareCount++;
     dataRead[i] = true;
     dataRead[j] = true;
     delay();
-    return array[i] > array[j];
+    return array.compare(i, j);
   }
 
   public void swap(int i, int j) {
-    swapCount++;
-    int temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
+    array.swap(i, j);
     dataWritten[i] = true;
     dataWritten[j] = true;
     delay();
   }
 
-  public boolean compareAndSwap(int i, int j) {
-    if (compare(i,j)) {
-      swap(i,j);
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public static void memcp(FancyIntegerArray from, int fromIndex,
-                           FancyIntegerArray to, int toIndex,
-                           int num) {
-    // Copies a block of memory, only invoking delay() once.
-    for (int i = 0; i < num; i++) {
-        from.readCount++;
-        from.dataRead[fromIndex+i] = true;
-        to.writeCount++;
-        to.dataWritten[toIndex+i] = true;
-        to.array[toIndex+i] = from.array[fromIndex+i];
-    }
-    from.delay();
-    to.delay();
-  }
-
   public int length() {
-    return length;
+    return array.length();
   }
 
   public int height() {
-    return height;
+    return array.height();
   }
 
   public void printCounts() {
-    if (readCount > 0)    System.out.println("Reads:   \t" + readCount);
-    if (writeCount > 0)   System.out.println("Writes:  \t" + writeCount);
-    if (compareCount > 0) System.out.println("Compares:\t" + compareCount);
-    if (swapCount > 0)    System.out.println("Swaps:   \t" + swapCount);
+    array.printCounts();
   }
 }

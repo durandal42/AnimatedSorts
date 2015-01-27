@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class SortTest {
 
   public static final int ARRAY_LENGTH = 1024;
@@ -7,15 +9,21 @@ public class SortTest {
     if (args.length == 0) usage();
     String method = args[0];
 
-    FancyIntegerArray fia = new FancyIntegerArray(ARRAY_LENGTH, ARRAY_HEIGHT, method);
-    fia.randomize();
+    IntegerArray ia = new FancyIntegerArray(ARRAY_LENGTH, ARRAY_HEIGHT, method);
+    randomize(ia);
 
-    sort(fia, method);
-    fia.destroy();
+    sort(ia, method);
     System.exit(0);
   }
 
-  public static void sort(FancyIntegerArray fia, String method) {
+  public static void randomize(IntegerArray ia) {
+    Random r = new Random();
+    for (int i = 0; i < ia.length(); i++) {
+      ia.write(i, r.nextInt(ia.height()));
+    }
+  }
+
+  public static void sort(IntegerArray fia, String method) {
     System.out.println("Begin sorting...");
     if (method.equals("merge")) Sorts.MergeSort(fia);
     else if (method.equals("heap")) Sorts.HeapSort(fia);

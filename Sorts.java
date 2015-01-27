@@ -57,26 +57,43 @@ public class Sorts {
     return null;
   }
 
-  public static void ExchangeSort(FancyIntegerArray fia) {
-    for (int i = 0 ; i < fia.length() - 1 ; i++) {
-      log("ExchangeSort: finding the " + i + "th smallest element (of " + fia.length() + ")...");
+  public static void memcp(IntegerArray from, int fromIndex,
+                           IntegerArray to, int toIndex,
+                           int num) {
+    for (int i = 0; i < num; i++) {
+        to.write(toIndex+i, from.read(fromIndex+i));
+    }
+  }
+
+  public static boolean compareAndSwap(IntegerArray ia, int i, int j) {
+    if (ia.compare(i,j)) {
+      ia.swap(i,j);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public static void ExchangeSort(IntegerArray ia) {
+    for (int i = 0 ; i < ia.length() - 1 ; i++) {
+      log("ExchangeSort: finding the " + i + "th smallest element (of " + ia.length() + ")...");
       // find the ith smallest element...
-      for(int j = i + 1 ; j < fia.length() ; j++) {
+      for(int j = i + 1 ; j < ia.length() ; j++) {
         // ... by doing a CompareAndSwap on everything after it
-        fia.compareAndSwap(i,j);
+        compareAndSwap(ia, i, j);
       }
     }
   }
 
-  public static void BubbleSort(FancyIntegerArray fia) {
-    for(int i = fia.length() - 1 ; i > 0 ; i--) {
+  public static void BubbleSort(IntegerArray ia) {
+    for(int i = ia.length() - 1 ; i > 0 ; i--) {
       log("BubbleSort: " + (i+1) + " elements remain to be sorted");
       // find the ith largest element...
       int lastTouched = 0;
       for(int j = 0 ; j < i ; j++) {
         // ... by bubbling it up to the end...
         // if any two adjacent elements are out of order, swap them
-        if (fia.compareAndSwap(j, j+1)) {
+        if (compareAndSwap(ia, j, j+1)) {
           lastTouched = j+1;  // remember the last element we actually touched...
         }
       }
@@ -84,22 +101,22 @@ public class Sorts {
     }
   }
 
-  public static void BidirectionalBubbleSort(FancyIntegerArray fia) {
+  public static void BidirectionalBubbleSort(IntegerArray ia) {
     // Bubble-like sort that alternates passes in each direction.
     int left = 0;
-    int right = fia.length();
+    int right = ia.length();
     while (left < right) {
       log("BidirectionalBubbleSort: right pass: remaining gap: " + (right - left));
       int lastTouched = left;
       for (int j = left; j < right - 1; j++) {
-        if (fia.compareAndSwap(j, j+1)) {
+        if (compareAndSwap(ia, j, j+1)) {
           lastTouched = j+1;
         }
       }
       right = lastTouched;
       log("BidirectionalBubbleSort: left pass: remaining gap: " + (right - left));
       for (int j = right - 1; j > left; j--) {
-        if (fia.compareAndSwap(j-1, j)) {
+        if (compareAndSwap(ia, j-1, j)) {
           lastTouched = j;
         }
       }
@@ -107,65 +124,64 @@ public class Sorts {
     }
   }
 
-  public static void CombSort(FancyIntegerArray fia) {
+  public static void CombSort(IntegerArray ia) {
     // Bubble-like sort that compares by progressively smaller gaps.
     final float SHRINKFACTOR = 1.3f;
     boolean flipped = false;
-    int gap = fia.length();
+    int gap = ia.length();
     int passes = 0;
     while (flipped || (gap > 1)) {
       gap = Math.max(1, (int) ((float) gap / SHRINKFACTOR));
       log("CombSort: pass " + (passes++) + ", with gap = " + gap);
       flipped = false;
-      for (int i = 0; i + gap < fia.length(); i++) {
-        if (fia.compareAndSwap(i, i + gap)) {
+      for (int i = 0; i + gap < ia.length(); i++) {
+        if (compareAndSwap(ia, i, i + gap)) {
           flipped = true;
         }
       }
     } 
   }
 
-  public static void SelectionSort(FancyIntegerArray fia) {
-    for(int i = fia.length()-1 ; i > 0 ; i--) {
-      log("SelectionSort: finding the " + (fia.length() - i - 1) + "the largest element (of " +
-          fia.length() + ")...");
+  public static void SelectionSort(IntegerArray ia) {
+    for(int i = ia.length()-1 ; i > 0 ; i--) {
+      log("SelectionSort: finding the " + (ia.length() - i - 1) + "the largest element (of " +
+          ia.length() + ")...");
       // find the ith largest element...
       int maxIndex = 0;
       for(int j = 1 ; j <= i ; j++) {
         // ... by comparing it with the current max
-        if (fia.compare(j, maxIndex)) {
+        if (ia.compare(j, maxIndex)) {
           maxIndex = j;
         }
       }
       // ... then swap it to the end
-      fia.swap(i, maxIndex);
+      ia.swap(i, maxIndex);
     }
   }
 
-  public static void CountingSort(FancyIntegerArray fia) {
-    FancyIntegerArray counts = new FancyIntegerArray(
-        fia.height(),  // how many possible values are in the data
-        10 * fia.length() / fia.height(),  // generous estimate of max count
+  public static void CountingSort(IntegerArray ia) {
+    IntegerArray counts = new FancyIntegerArray(
+        ia.height(),  // how many possible values are in the data
+        10 * ia.length() / ia.height(),  // generous estimate of max count
         "element counts");
 
     log("CountingSort: zeroing counts.");
-    for (int i = 0; i < fia.height(); i++) {
+    for (int i = 0; i < ia.height(); i++) {
       counts.write(i, 0);
     }
 
     log("CountingSort: counting elements.");
-    for (int i = 0; i < fia.length(); i++) {
-      int val = fia.read(i);
+    for (int i = 0; i < ia.length(); i++) {
+      int val = ia.read(i);
       counts.write(val, counts.read(val) + 1);
     }
 
     log("CountingSort: writing counted elements back into array.");
-    for (int i = 0, j = 0; i < fia.height(); i++) {
+    for (int i = 0, j = 0; i < ia.height(); i++) {
       for (int count = counts.read(i); count > 0; count--) {
-        fia.write(j++, i);
+        ia.write(j++, i);
       }
     }
-    counts.destroy();
   }
 
   static int maxDepthReached;
@@ -187,24 +203,23 @@ public class Sorts {
     }
   }
 
-  public static void MergeSort(FancyIntegerArray fia) {
-    FancyIntegerArray scratch = new FancyIntegerArray(
-        fia.length(), fia.height(), "merge scratch buffer");
+  public static void MergeSort(IntegerArray ia) {
+    IntegerArray scratch = new FancyIntegerArray(
+        ia.length(), ia.height(), "merge scratch buffer");
     resetDepth();
     // Recurse on the entire array.
-    boolean resultInScratch = MergeSortRecurse(fia, 0, fia.length(), scratch, 0);
+    boolean resultInScratch = MergeSortRecurse(ia, 0, ia.length(), scratch, 0);
     if (resultInScratch) {
-      FancyIntegerArray.memcp(scratch, 0,
-                              fia, 0,
-                              fia.length());
+      memcp(scratch, 0,
+            ia, 0,
+            ia.length());
     }
-    scratch.destroy();
   }
   // Assume that the data to be sorted is in the source buffer.
   // Returns whether the sorted data is now in the provided scratch buffer.
-  private static boolean MergeSortRecurse(final FancyIntegerArray fia,
+  private static boolean MergeSortRecurse(final IntegerArray ia,
                                           final int left, final int right,
-                                          final FancyIntegerArray scratch,
+                                          final IntegerArray scratch,
                                           final int depth) {
     depthReached(depth, "MergeSort");
 
@@ -218,12 +233,12 @@ public class Sorts {
     // Recursively sort each half.
     Future<Boolean> leftDone = run(new Callable<Boolean>() {
       public Boolean call() {
-        return MergeSortRecurse(fia, left, mid, scratch, depth + 1);
+        return MergeSortRecurse(ia, left, mid, scratch, depth + 1);
       }
     });
     Future<Boolean> rightDone = run(new Callable<Boolean>() {
       public Boolean call() {
-        return MergeSortRecurse(fia, mid, right, scratch, depth + 1);
+        return MergeSortRecurse(ia, mid, right, scratch, depth + 1);
       }
     });
     // Recursive calls tell us where their results are stored.
@@ -234,26 +249,26 @@ public class Sorts {
       // left and right side aren't in the same place; put them both in scratch.
       if (leftInScratch) {
         // left is already in scratch; move right.
-        FancyIntegerArray.memcp(fia, mid,
-                                scratch, mid,
-                                right - mid);
+        memcp(ia, mid,
+              scratch, mid,
+              right - mid);
         rightInScratch = true;
       } else {
         // right is already in scratch; move left.
-        FancyIntegerArray.memcp(fia, left,
-                                scratch, left,
-                                mid - left);
+        memcp(ia, left,
+              scratch, left,
+              mid - left);
         leftInScratch = true;
       }
     }
     // left and right are now in the same place.
 
-    FancyIntegerArray mergeFrom = fia;
-    FancyIntegerArray mergeTo = scratch;
+    IntegerArray mergeFrom = ia;
+    IntegerArray mergeTo = scratch;
     if (leftInScratch) {
       // Data is in scratch; merge it back into source buffer.
       mergeFrom = scratch;
-      mergeTo = fia;
+      mergeTo = ia;
     }
 
     if (mergeFrom.compare(mid, mid - 1)) {
@@ -288,25 +303,25 @@ public class Sorts {
     return !leftInScratch;
   }
 
-  public static void ShakerSort(FancyIntegerArray fia) {
+  public static void ShakerSort(IntegerArray ia) {
     int left = 0;
-    int right = fia.length() - 1;
+    int right = ia.length() - 1;
     while (left < right) {
       log("ShakerSort: remaining gap: " + (right - left));
       // Find both the min and max...
       int min = left;
       int max = left;
       for (int j = left + 1; j <= right; j++) {
-        if (fia.compare(min, j)) min = j;
-        if (fia.compare(j, max)) max = j;
+        if (ia.compare(min, j)) min = j;
+        if (ia.compare(j, max)) max = j;
       }
 
       // ... and swap them into place.
-      fia.swap(min, left);
+      ia.swap(min, left);
       if (max == left) {
-        fia.swap(min, right);
+        ia.swap(min, right);
       } else { 
-        fia.swap(max, right);
+        ia.swap(max, right);
       }
 
       left++;
@@ -314,37 +329,37 @@ public class Sorts {
     }
   }
 
-  public static void InsertionSort(FancyIntegerArray fia) {
-    for (int i = 1; i < fia.length(); i++) {
-      log("InsertionSort: " + i + " of " + fia.length() + " elements are sorted");
+  public static void InsertionSort(IntegerArray ia) {
+    for (int i = 1; i < ia.length(); i++) {
+      log("InsertionSort: " + i + " of " + ia.length() + " elements are sorted");
       for (int j = i; j >= 1; j--) {
-        if (!fia.compareAndSwap(j - 1, j)) break;
+        if (!compareAndSwap(ia, j - 1, j)) break;
       }
     }
   }
 
-  public static void ShellSort(FancyIntegerArray fia) {
-    int gap = fia.length();
+  public static void ShellSort(IntegerArray ia) {
+    int gap = ia.length();
     do {
       gap = Math.max(1, gap / 3);
       log("ShellSort: InsertionSorting with a gap of: " + gap);
-      for (int i = gap; i < fia.length(); i++) {
+      for (int i = gap; i < ia.length(); i++) {
         for (int j = i; j >= gap; j -= gap) {
-         if (!fia.compareAndSwap(j - gap, j)) break;
+         if (!compareAndSwap(ia, j - gap, j)) break;
         }
       }
     } while (gap != 1);
   }
 
-  public static void HeapSort(FancyIntegerArray fia) {
+  public static void HeapSort(IntegerArray ia) {
     log("HeapSort: heapifying...");
-    for (int i = fia.length() / 2; i > 0; i--) {
-      HeapSortPush(fia, i, fia.length());
+    for (int i = ia.length() / 2; i > 0; i--) {
+      HeapSortPush(ia, i, ia.length());
     }
     log("HeapSort: popping from the heap...");
-    for (int i = fia.length() - 1; i > 0; i--) {
-      fia.swap(0, i);
-      HeapSortPush(fia, 1, i);
+    for (int i = ia.length() - 1; i > 0; i--) {
+      ia.swap(0, i);
+      HeapSortPush(ia, 1, i);
     }
   }
 
@@ -353,14 +368,14 @@ public class Sorts {
   // holds for the root as well.
   // Heap-indexing logic is easier with a 1-based backing array, so note that all array accesses
   // are -1 from what you might expect.
-  private static void HeapSortPush(FancyIntegerArray fia, int root, int limit) {
+  private static void HeapSortPush(IntegerArray ia, int root, int limit) {
     while (root <= limit / 2) {  // Any higher, and root is actually a leaf.
       int child = 2 * root;  // root's left child.
-      if (child < limit && fia.compare(child, child - 1)) {
+      if (child < limit && ia.compare(child, child - 1)) {
         child++;  // root's right child.
       }
       // child is now the larger child of root.
-      if (fia.compareAndSwap(child - 1, root - 1)) {
+      if (compareAndSwap(ia, child - 1, root - 1)) {
         root = child;
         // We've pushed root down, swapping with its larger child;
         // Next time around the loop will enforce the heap-property for that child.
@@ -370,11 +385,11 @@ public class Sorts {
     }
   }
 
-  public static void QuickSort(FancyIntegerArray fia) {
+  public static void QuickSort(IntegerArray ia) {
     resetDepth();
-    QuickSortRecurse(fia, 0, fia.length(), 0);
+    QuickSortRecurse(ia, 0, ia.length(), 0);
   }
-  private static void QuickSortRecurse(final FancyIntegerArray fia,
+  private static void QuickSortRecurse(final IntegerArray ia,
                                        final int left, final int right,
                                        final int depth) {
     depthReached(depth, "QuickSort");
@@ -382,18 +397,18 @@ public class Sorts {
       return;
     }
 
-    final int pivot = QuickSortPartition(fia, left, right);
+    final int pivot = QuickSortPartition(ia, left, right);
 
     // Recursively sort each half.
     Future<Void> leftDone = run(new Callable<Void>() {
       public Void call() {
-        QuickSortRecurse(fia, left, pivot, depth + 1);
+        QuickSortRecurse(ia, left, pivot, depth + 1);
         return null;
       }
     });
     Future<Void> rightDone = run(new Callable<Void>() {
       public Void call() {
-        QuickSortRecurse(fia, pivot + 1, right, depth + 1);
+        QuickSortRecurse(ia, pivot + 1, right, depth + 1);
         return null;
       }
     });
@@ -401,26 +416,26 @@ public class Sorts {
     join(rightDone);
     depthReturned(depth, "QuickSort");
   }
-  public static int QuickSortSelectPivot(FancyIntegerArray fia, int left, int right) {
+  public static int QuickSortSelectPivot(IntegerArray ia, int left, int right) {
     return (left + right) / 2;
   }
-  public static int QuickSortPartition(FancyIntegerArray fia,
+  public static int QuickSortPartition(IntegerArray ia,
                                        int left, int right) {
-    int pivot = QuickSortSelectPivot(fia, left, right);
+    int pivot = QuickSortSelectPivot(ia, left, right);
 
-    fia.swap(pivot, right - 1);  // move pivot to end
+    ia.swap(pivot, right - 1);  // move pivot to end
     pivot = right - 1;
 
     right--;  // don't include pivot at end
     while (left < right) {
-      if (fia.compare(left, pivot)) {
-        fia.swap(left, --right);
+      if (ia.compare(left, pivot)) {
+        ia.swap(left, --right);
       } else {
         left++;
       }
     }
 
-    fia.swap(pivot, left);  // move pivot to its final place
+    ia.swap(pivot, left);  // move pivot to its final place
     pivot = left;
     return pivot;
   }
@@ -428,40 +443,40 @@ public class Sorts {
   private static boolean getNthBit(int x, int n) {
     return ((x & (1 << n)) != 0);
   }
-  public static void BinaryRadixSort(FancyIntegerArray fia) {
-    int bit = (int) Math.ceil(Math.log(fia.height()) / Math.log(2));
+  public static void BinaryRadixSort(IntegerArray ia) {
+    int bit = (int) Math.ceil(Math.log(ia.height()) / Math.log(2));
     resetDepth();
-    BinaryRadixSortRecurse(fia, 0, fia.length(), bit - 1, 0);
+    BinaryRadixSortRecurse(ia, 0, ia.length(), bit - 1, 0);
   }
-  public static void BinaryRadixSortRecurse(final FancyIntegerArray fia,
+  public static void BinaryRadixSortRecurse(final IntegerArray ia,
                                             final int left, final int right,
                                             final int bit,
                                             final int depth) {
     depthReached(depth, "BinaryRadixSort");
     if (bit < 0) return;
     if (right - left <= 1) return;
-    final int pivot = BinaryRadixSortPartition(fia, left, right, bit);
+    final int pivot = BinaryRadixSortPartition(ia, left, right, bit);
     Future<Void> leftDone = run(new Callable<Void>() {
             public Void call() {
-                BinaryRadixSortRecurse(fia, left, pivot, bit - 1, depth + 1);
+                BinaryRadixSortRecurse(ia, left, pivot, bit - 1, depth + 1);
                 return null;
             }
         });
     Future<Void> rightDone = run(new Callable<Void>() {
             public Void call() {
-                BinaryRadixSortRecurse(fia, pivot, right, bit - 1, depth + 1);
+                BinaryRadixSortRecurse(ia, pivot, right, bit - 1, depth + 1);
                 return null;
             }
         });
     join(leftDone);
     join(rightDone);
   }
-  public static int BinaryRadixSortPartition(FancyIntegerArray fia,
+  public static int BinaryRadixSortPartition(IntegerArray ia,
                                              int left, int right,
                                              int bit) {
     while (left < right) {
-      if (getNthBit(fia.read(left), bit)) {
-        fia.swap(left, --right);
+      if (getNthBit(ia.read(left), bit)) {
+        ia.swap(left, --right);
       } else {
         left++;
       }
@@ -470,37 +485,35 @@ public class Sorts {
     return left;
   }
 
-  public static void RadixSort(FancyIntegerArray fia) {
-    int digits = (int) Math.ceil(Math.log(fia.height()) / Math.log(2));
+  public static void RadixSort(IntegerArray ia) {
+    int digits = (int) Math.ceil(Math.log(ia.height()) / Math.log(2));
 
-    FiaPartition partition = new FiaPartition(fia.length(), fia.height());
+    iaPartition partition = new iaPartition(ia.length(), ia.height());
 
     for(int i = 0 ; i < digits ; i++) {
       log("Starting radix pass " + i + " of " + digits);
       int count = 0;
-      for(int j = 0 ; j < fia.length() ; j++) {
-        int x = fia.read(j);
+      for(int j = 0 ; j < ia.length() ; j++) {
+        int x = ia.read(j);
         partition.add(getNthBit(x, i), x);
       }
       while(!partition.isEmpty(false)) {
-        fia.write(count++, partition.remove(false));
+        ia.write(count++, partition.remove(false));
       }
       while(!partition.isEmpty(true)) {
-        fia.write(count++, partition.remove(true));
+        ia.write(count++, partition.remove(true));
       }
       partition.clear();
     }
-
-    partition.destroy();
   }
-  private static class FiaPartition {
-    // FIA-backed partition for a fixed number of elements.
+  private static class iaPartition {
+    // ia-backed partition for a fixed number of elements.
     // Elements removed in FIFO order.
-    FancyIntegerArray data;
+    IntegerArray data;
 
     int leftMin, leftMax, rightMin, rightMax;
  
-    public FiaPartition(int length, int height) {
+    public iaPartition(int length, int height) {
       data = new FancyIntegerArray(length, height, "partition buffer");
       clear();
     }
@@ -536,21 +549,17 @@ public class Sorts {
       rightMax = data.length();
       log("clear called");
     }
-
-    void destroy() {
-      data.destroy();
-    }
   }
 
-  public static void SillySort(FancyIntegerArray fia) {
+  public static void SillySort(IntegerArray ia) {
     int count = 0;
     int mostFailures = 0;
-    log("SillySort: randomly CompareAndSwapping until " + fia.length() + " consecutive failures.");
-    while(count++ < fia.length()) {
-      int i = (int) (Math.random() * (double) fia.length());
-      int j = (int) (Math.random() * (double) fia.length());
-      if ((i > j && fia.compareAndSwap(j,i)) ||
-          (i < j && fia.compareAndSwap(i,j))) {
+    log("SillySort: randomly CompareAndSwapping until " + ia.length() + " consecutive failures.");
+    while(count++ < ia.length()) {
+      int i = (int) (Math.random() * (double) ia.length());
+      int j = (int) (Math.random() * (double) ia.length());
+      if ((i > j && compareAndSwap(ia, j,i)) ||
+          (i < j && compareAndSwap(ia, i,j))) {
         if (count > mostFailures) {
           log("SillySort: " + count + " failed CompareAndSwaps before a success.");
           mostFailures = count;
@@ -558,27 +567,27 @@ public class Sorts {
         count = 0;
       }
     }
-    InsertionSort(fia);
+    InsertionSort(ia);
   }
 
-  public static void ThreeStoogesSort(FancyIntegerArray fia) {
+  public static void ThreeStoogesSort(IntegerArray ia) {
     resetDepth();
-    ThreeStoogesRecurse(fia, 0, fia.length(), 0);
+    ThreeStoogesRecurse(ia, 0, ia.length(), 0);
   }
-  public static void ThreeStoogesRecurse(FancyIntegerArray fia,
+  public static void ThreeStoogesRecurse(IntegerArray ia,
                                          int left, int right,
                                          int depth) {
     depthReached(depth, "ThreeStoogesSort");
     if (right - left < 2) return;
     if (right - left == 2) {
-      fia.compareAndSwap(left, right - 1);
+      compareAndSwap(ia, left, right - 1);
       return;
     }
     int pivot1 = left + (right - left) / 3;
     int pivot2 = left + (right - left) * 2 / 3;
-    ThreeStoogesRecurse(fia, left, pivot2, depth + 1);
-    ThreeStoogesRecurse(fia, pivot1, right, depth + 1);
-    ThreeStoogesRecurse(fia, left, pivot2, depth + 1);
+    ThreeStoogesRecurse(ia, left, pivot2, depth + 1);
+    ThreeStoogesRecurse(ia, pivot1, right, depth + 1);
+    ThreeStoogesRecurse(ia, left, pivot2, depth + 1);
     depthReturned(depth, "ThreeStoogesSort");
   }
 
