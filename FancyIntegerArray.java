@@ -93,7 +93,7 @@ public class FancyIntegerArray extends Canvas implements Runnable {
 
   public void randomize() {
     Random r = new Random();
-    for(int i = 0 ; i < length() ; i++) {
+    for (int i = 0; i < length; i++) {
       write(i, r.nextInt(height));
     }
     readCount = 0;
@@ -114,7 +114,7 @@ public class FancyIntegerArray extends Canvas implements Runnable {
     g.setColor(Color.black);
     g.fillRect(0, 0, length + 1, height + 1);
     g.setColor(Color.white);
-    for(int i = 0; i < length ; i++) {
+    for (int i = 0; i < length; i++) {
       if (dataWritten[i]) {
         g.setColor(Color.red);        
       } else if (dataRead[i]) {
@@ -128,7 +128,7 @@ public class FancyIntegerArray extends Canvas implements Runnable {
     }
 
     g.setColor(Color.white);
-    for(int i = 0; i < length ; i++) {
+    for (int i = 0; i < length; i++) {
       g.fillRect(i, height - array[i], 1, 1);
     }
   }
@@ -140,14 +140,14 @@ public class FancyIntegerArray extends Canvas implements Runnable {
     return array[i];
   }
 
-  public void write(int i, int x) {
+  public void write(int i, int value) {
     writeCount++;
-    array[i] = x;
+    array[i] = value;
     dataWritten[i] = true;
     delay();
   }
 
-  public boolean compare(int i , int j) {
+  public boolean compare(int i, int j) {
     compareCount++;
     dataRead[i] = true;
     dataRead[j] = true;
