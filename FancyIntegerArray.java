@@ -2,12 +2,13 @@ import java.util.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 
-public class FancyIntegerArray extends Canvas implements Runnable {
+public class FancyIntegerArray implements Runnable {
 
   public static final int MAX_FPS = 100;
   public static final int ENFORCED_DELAY_MS = 1;
 
-  private Frame frame;  // owning frame.
+  private Frame frame;
+  private Canvas canvas;
 
   private int length;
   private int height;
@@ -38,9 +39,11 @@ public class FancyIntegerArray extends Canvas implements Runnable {
     dataRead = new boolean[length];
     dataWritten = new boolean[length];
 
+    canvas = new Canvas();
+
     // Create and show parent frame.
     frame = new Frame(name);
-    frame.add("Center", this);
+    frame.add("Center", canvas);
     frame.pack();
     frame.setSize(new Dimension(length, height+25));
     frame.setVisible(true);
@@ -50,8 +53,8 @@ public class FancyIntegerArray extends Canvas implements Runnable {
   }
 
   public void run() {
-    createBufferStrategy(2);  // double buffering
-    BufferStrategy strategy = getBufferStrategy();
+    canvas.createBufferStrategy(2);  // double buffering
+    BufferStrategy strategy = canvas.getBufferStrategy();
 
     long lastFpsUpdate = System.currentTimeMillis();
     int frames = 0;
