@@ -6,6 +6,4 @@ public interface IntegerArray {
 
   public int length();
   public int height();
-
-  public void printCounts();
 }

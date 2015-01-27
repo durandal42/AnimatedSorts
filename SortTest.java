@@ -23,28 +23,27 @@ public class SortTest {
     }
   }
 
-  public static void sort(IntegerArray fia, String method) {
+  public static void sort(IntegerArray ia, String method) {
     System.out.println("Begin sorting...");
-    if (method.equals("merge")) Sorts.MergeSort(fia);
-    else if (method.equals("heap")) Sorts.HeapSort(fia);
-    else if (method.equals("quick")) Sorts.QuickSort(fia);
-    else if (method.equals("radix")) Sorts.RadixSort(fia);
-    else if (method.equals("selection")) Sorts.SelectionSort(fia);
-    else if (method.equals("insertion")) Sorts.InsertionSort(fia);
-    else if (method.equals("bidirectionalbubble")) Sorts.BidirectionalBubbleSort(fia);
-    else if (method.equals("shaker")) Sorts.ShakerSort(fia);
-    else if (method.equals("shell")) Sorts.ShellSort(fia);
-    else if (method.equals("comb")) Sorts.CombSort(fia);
-    else if (method.equals("bubble")) Sorts.BubbleSort(fia);
-    else if (method.equals("silly")) Sorts.SillySort(fia);
-    else if (method.equals("exchange")) Sorts.ExchangeSort(fia);
-    else if (method.equals("threestooges")) Sorts.ThreeStoogesSort(fia);
-    else if (method.equals("counting")) Sorts.CountingSort(fia);
-    else if (method.equals("binaryradix")) Sorts.BinaryRadixSort(fia);
+    if (method.equals("merge")) Sorts.MergeSort(ia);
+    else if (method.equals("heap")) Sorts.HeapSort(ia);
+    else if (method.equals("quick")) Sorts.QuickSort(ia);
+    else if (method.equals("radix")) Sorts.RadixSort(ia);
+    else if (method.equals("selection")) Sorts.SelectionSort(ia);
+    else if (method.equals("insertion")) Sorts.InsertionSort(ia);
+    else if (method.equals("bidirectionalbubble")) Sorts.BidirectionalBubbleSort(ia);
+    else if (method.equals("shaker")) Sorts.ShakerSort(ia);
+    else if (method.equals("shell")) Sorts.ShellSort(ia);
+    else if (method.equals("comb")) Sorts.CombSort(ia);
+    else if (method.equals("bubble")) Sorts.BubbleSort(ia);
+    else if (method.equals("silly")) Sorts.SillySort(ia);
+    else if (method.equals("exchange")) Sorts.ExchangeSort(ia);
+    else if (method.equals("threestooges")) Sorts.ThreeStoogesSort(ia);
+    else if (method.equals("counting")) Sorts.CountingSort(ia);
+    else if (method.equals("binaryradix")) Sorts.BinaryRadixSort(ia);
     else usage();
 
     System.out.println("Done sorting.");
-    fia.printCounts();
   }
 
   public static void usage() {

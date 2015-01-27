@@ -149,7 +149,4 @@ public class FancyIntegerArray implements IntegerArray, Runnable {
     return array.height();
   }
 
-  public void printCounts() {
-    array.printCounts();
-  }
 }
