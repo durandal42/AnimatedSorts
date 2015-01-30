@@ -1,11 +1,23 @@
-import java.util.Random;
 import SortingMethods.*;
 import Framework.*;
+
+import java.util.*;
 
 public class SortDemo {
 
   public static final int ARRAY_LENGTH = 1024;
   public static final int ARRAY_HEIGHT = 768;
+
+  static Map<String, Sorter> methods = registerSorters();
+
+  static Map<String, Sorter> registerSorters() {
+    Map<String, Sorter> sorters = new HashMap<String, Sorter>();
+    sorters.put("bidirectionalbubble", new BidirectionalBubbleSorter());
+    sorters.put("comb", new CombSorter());
+    sorters.put("bubble", new BubbleSorter());
+    sorters.put("exchange", new ExchangeSorter());
+    return java.util.Collections.unmodifiableMap(sorters);
+  }
 
   public static void main(String[] args) {
     if (args.length == 0) usage();
@@ -27,19 +39,16 @@ public class SortDemo {
 
   public static void sort(IntegerArray ia, String method) {
     System.out.println("Begin sorting...");
-    if (method.equals("merge")) SortUtils.MergeSort(ia);
+    if (methods.containsKey(method)) methods.get(method).sort(ia);
+    else if (method.equals("merge")) SortUtils.MergeSort(ia);
     else if (method.equals("heap")) SortUtils.HeapSort(ia);
     else if (method.equals("quick")) SortUtils.QuickSort(ia);
     else if (method.equals("radix")) SortUtils.RadixSort(ia);
     else if (method.equals("selection")) SortUtils.SelectionSort(ia);
     else if (method.equals("insertion")) SortUtils.InsertionSort(ia);
-    else if (method.equals("bidirectionalbubble")) new BidirectionalBubbleSorter().sort(ia);
     else if (method.equals("shaker")) SortUtils.ShakerSort(ia);
     else if (method.equals("shell")) SortUtils.ShellSort(ia);
-    else if (method.equals("comb")) new CombSorter().sort(ia);
-    else if (method.equals("bubble")) new BubbleSorter().sort(ia);
     else if (method.equals("silly")) SortUtils.SillySort(ia);
-    else if (method.equals("exchange")) new ExchangeSorter().sort(ia);
     else if (method.equals("threestooges")) SortUtils.ThreeStoogesSort(ia);
     else if (method.equals("counting")) SortUtils.CountingSort(ia);
     else if (method.equals("binaryradix")) SortUtils.BinaryRadixSort(ia);
