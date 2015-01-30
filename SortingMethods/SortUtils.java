@@ -78,31 +78,11 @@ public class SortUtils {
     }
   }
 
-  static int maxDepthReached;
-  static int minDepthReturned;
-  static void resetDepth() {
-    maxDepthReached = Integer.MIN_VALUE;
-    minDepthReturned = Integer.MAX_VALUE;
-  }
-  static void depthReached(int depth, String label) {
-    if (depth > maxDepthReached) {
-      log(label + ": new maximum depth reached: " + depth);
-      maxDepthReached = depth;
-    }
-  }
-  static void depthReturned(int depth, String label) {
-    if (depth < minDepthReturned) {
-      log(label + ": new minimum depth returned from: " + depth);
-      minDepthReturned = depth;
-    }
-  }
-
   public static void MergeSort(IntegerArray ia) {
     IntegerArray scratch = ia.scratch(
         ia.length(), ia.height(), "merge scratch buffer");
-    resetDepth();
     // Recurse on the entire array.
-    boolean resultInScratch = MergeSortRecurse(ia, 0, ia.length(), scratch, 0);
+    boolean resultInScratch = MergeSortRecurse(ia, 0, ia.length(), scratch);
     if (resultInScratch) {
       memcp(scratch, 0,
             ia, 0,
@@ -113,10 +93,7 @@ public class SortUtils {
   // Returns whether the sorted data is now in the provided scratch buffer.
   private static boolean MergeSortRecurse(final IntegerArray ia,
                                           final int left, final int right,
-                                          final IntegerArray scratch,
-                                          final int depth) {
-    depthReached(depth, "MergeSort");
-
+                                          final IntegerArray scratch) {
     if (right - left <= 1) {
       // A single element is (or no elements are) already sorted.
       return false;  // Assume data in source.
@@ -127,12 +104,12 @@ public class SortUtils {
     // Recursively sort each half.
     Future<Boolean> leftDone = run(new Callable<Boolean>() {
       public Boolean call() {
-        return MergeSortRecurse(ia, left, mid, scratch, depth + 1);
+        return MergeSortRecurse(ia, left, mid, scratch);
       }
     });
     Future<Boolean> rightDone = run(new Callable<Boolean>() {
       public Boolean call() {
-        return MergeSortRecurse(ia, mid, right, scratch, depth + 1);
+        return MergeSortRecurse(ia, mid, right, scratch);
       }
     });
     // Recursive calls tell us where their results are stored.
@@ -167,7 +144,6 @@ public class SortUtils {
 
     if (mergeFrom.compare(mid, mid - 1)) {
       // The entire first half is less than the entire right half; no need to merge.
-      depthReturned(depth, "MergeSort");
       return leftInScratch;  // We didn't actually move the data.
     }
 
@@ -193,7 +169,6 @@ public class SortUtils {
       mergeTo.write(k++, mergeFrom.read(j++));
     }
 
-    depthReturned(depth, "MergeSort");
     return !leftInScratch;
   }
 
@@ -280,13 +255,10 @@ public class SortUtils {
   }
 
   public static void QuickSort(IntegerArray ia) {
-    resetDepth();
-    QuickSortRecurse(ia, 0, ia.length(), 0);
+    QuickSortRecurse(ia, 0, ia.length());
   }
   private static void QuickSortRecurse(final IntegerArray ia,
-                                       final int left, final int right,
-                                       final int depth) {
-    depthReached(depth, "QuickSort");
+                                       final int left, final int right) {
     if (right - left <= 1) {
       return;
     }
@@ -296,19 +268,18 @@ public class SortUtils {
     // Recursively sort each half.
     Future<Void> leftDone = run(new Callable<Void>() {
       public Void call() {
-        QuickSortRecurse(ia, left, pivot, depth + 1);
+        QuickSortRecurse(ia, left, pivot);
         return null;
       }
     });
     Future<Void> rightDone = run(new Callable<Void>() {
       public Void call() {
-        QuickSortRecurse(ia, pivot + 1, right, depth + 1);
+        QuickSortRecurse(ia, pivot + 1, right);
         return null;
       }
     });
     join(leftDone);
     join(rightDone);
-    depthReturned(depth, "QuickSort");
   }
   public static int QuickSortSelectPivot(IntegerArray ia, int left, int right) {
     return (left + right) / 2;
@@ -339,26 +310,23 @@ public class SortUtils {
   }
   public static void BinaryRadixSort(IntegerArray ia) {
     int bit = (int) Math.ceil(Math.log(ia.height()) / Math.log(2));
-    resetDepth();
-    BinaryRadixSortRecurse(ia, 0, ia.length(), bit - 1, 0);
+    BinaryRadixSortRecurse(ia, 0, ia.length(), bit - 1);
   }
   public static void BinaryRadixSortRecurse(final IntegerArray ia,
                                             final int left, final int right,
-                                            final int bit,
-                                            final int depth) {
-    depthReached(depth, "BinaryRadixSort");
+                                            final int bit) {
     if (bit < 0) return;
     if (right - left <= 1) return;
     final int pivot = BinaryRadixSortPartition(ia, left, right, bit);
     Future<Void> leftDone = run(new Callable<Void>() {
             public Void call() {
-                BinaryRadixSortRecurse(ia, left, pivot, bit - 1, depth + 1);
+                BinaryRadixSortRecurse(ia, left, pivot, bit - 1);
                 return null;
             }
         });
     Future<Void> rightDone = run(new Callable<Void>() {
             public Void call() {
-                BinaryRadixSortRecurse(ia, pivot, right, bit - 1, depth + 1);
+                BinaryRadixSortRecurse(ia, pivot, right, bit - 1);
                 return null;
             }
         });
@@ -465,13 +433,10 @@ public class SortUtils {
   }
 
   public static void ThreeStoogesSort(IntegerArray ia) {
-    resetDepth();
-    ThreeStoogesRecurse(ia, 0, ia.length(), 0);
+    ThreeStoogesRecurse(ia, 0, ia.length());
   }
   public static void ThreeStoogesRecurse(IntegerArray ia,
-                                         int left, int right,
-                                         int depth) {
-    depthReached(depth, "ThreeStoogesSort");
+                                         int left, int right) {
     if (right - left < 2) return;
     if (right - left == 2) {
       compareAndSwap(ia, left, right - 1);
@@ -479,10 +444,9 @@ public class SortUtils {
     }
     int pivot1 = left + (right - left) / 3;
     int pivot2 = left + (right - left) * 2 / 3;
-    ThreeStoogesRecurse(ia, left, pivot2, depth + 1);
-    ThreeStoogesRecurse(ia, pivot1, right, depth + 1);
-    ThreeStoogesRecurse(ia, left, pivot2, depth + 1);
-    depthReturned(depth, "ThreeStoogesSort");
+    ThreeStoogesRecurse(ia, left, pivot2);
+    ThreeStoogesRecurse(ia, pivot1, right);
+    ThreeStoogesRecurse(ia, left, pivot2);
   }
 
 }
