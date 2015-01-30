@@ -39,7 +39,7 @@ public class SortDemo {
     else if (method.equals("comb")) SortUtils.CombSort(ia);
     else if (method.equals("bubble")) new BubbleSorter().sort(ia);
     else if (method.equals("silly")) SortUtils.SillySort(ia);
-    else if (method.equals("exchange")) SortUtils.ExchangeSort(ia);
+    else if (method.equals("exchange")) new ExchangeSorter().sort(ia);
     else if (method.equals("threestooges")) SortUtils.ThreeStoogesSort(ia);
     else if (method.equals("counting")) SortUtils.CountingSort(ia);
     else if (method.equals("binaryradix")) SortUtils.BinaryRadixSort(ia);
