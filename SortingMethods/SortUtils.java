@@ -78,24 +78,6 @@ public class SortUtils {
     }
   }
 
-  public static void CombSort(IntegerArray ia) {
-    // Bubble-like sort that compares by progressively smaller gaps.
-    final float SHRINKFACTOR = 1.3f;
-    boolean flipped = false;
-    int gap = ia.length();
-    int passes = 0;
-    while (flipped || (gap > 1)) {
-      gap = Math.max(1, (int) ((float) gap / SHRINKFACTOR));
-      log("CombSort: pass " + (passes++) + ", with gap = " + gap);
-      flipped = false;
-      for (int i = 0; i + gap < ia.length(); i++) {
-        if (compareAndSwap(ia, i, i + gap)) {
-          flipped = true;
-        }
-      }
-    } 
-  }
-
   public static void SelectionSort(IntegerArray ia) {
     for(int i = ia.length()-1 ; i > 0 ; i--) {
       log("SelectionSort: finding the " + (ia.length() - i - 1) + "the largest element (of " +

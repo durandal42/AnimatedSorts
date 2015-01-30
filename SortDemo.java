@@ -36,7 +36,7 @@ public class SortDemo {
     else if (method.equals("bidirectionalbubble")) new BidirectionalBubbleSorter().sort(ia);
     else if (method.equals("shaker")) SortUtils.ShakerSort(ia);
     else if (method.equals("shell")) SortUtils.ShellSort(ia);
-    else if (method.equals("comb")) SortUtils.CombSort(ia);
+    else if (method.equals("comb")) new CombSorter().sort(ia);
     else if (method.equals("bubble")) new BubbleSorter().sort(ia);
     else if (method.equals("silly")) SortUtils.SillySort(ia);
     else if (method.equals("exchange")) new ExchangeSorter().sort(ia);
