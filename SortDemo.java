@@ -60,19 +60,18 @@ public class SortDemo {
   public static void usage() {
     System.out.println("java SortDemo <sort-method>");
     System.out.println("sort-method can be any of the following:");
+    for (String method : methods.keySet()) {
+        System.out.println("\t" + method);
+    }
     System.out.println("\tmerge");
     System.out.println("\theap");
     System.out.println("\tquick");
     System.out.println("\tselection");
     System.out.println("\tinsertion");
-    System.out.println("\tbidirectionalbubble");
     System.out.println("\tshaker");
     System.out.println("\tshell");
-    System.out.println("\tcomb");
-    System.out.println("\tbubble");
     System.out.println("\tradix");
     System.out.println("\tsilly");
-    System.out.println("\texchange");
     System.out.println("\tthreestooges");
     System.out.println("\tcounting");
     System.out.println("\tbinaryradix");
