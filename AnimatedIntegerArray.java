@@ -2,7 +2,7 @@ import java.util.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 
-public class FancyIntegerArray implements IntegerArray, Runnable {
+public class AnimatedIntegerArray implements IntegerArray, Runnable {
 
   public static final int MAX_FPS = 100;
   public static final int ENFORCED_DELAY_MS = 1;
@@ -19,11 +19,11 @@ public class FancyIntegerArray implements IntegerArray, Runnable {
   // Sentinel for shutting down display loop.
   private boolean alive = true;
 
-  public FancyIntegerArray(int length, int height) {
+  public AnimatedIntegerArray(int length, int height) {
     this(length, height, "unnamed buffer");
   }
 
-  public FancyIntegerArray(int length, int height, String name) {
+  public AnimatedIntegerArray(int length, int height, String name) {
     array = new PlainIntegerArray(length, height);
 
     dataRead = new boolean[length];
@@ -150,7 +150,7 @@ public class FancyIntegerArray implements IntegerArray, Runnable {
   }
 
   public IntegerArray scratch(int length, int height, String name) {
-    return new FancyIntegerArray(length, height, name);
+    return new AnimatedIntegerArray(length, height, name);
   }
 
 }
