@@ -78,29 +78,6 @@ public class SortUtils {
     }
   }
 
-  public static void BidirectionalBubbleSort(IntegerArray ia) {
-    // Bubble-like sort that alternates passes in each direction.
-    int left = 0;
-    int right = ia.length();
-    while (left < right) {
-      log("BidirectionalBubbleSort: right pass: remaining gap: " + (right - left));
-      int lastTouched = left;
-      for (int j = left; j < right - 1; j++) {
-        if (compareAndSwap(ia, j, j+1)) {
-          lastTouched = j+1;
-        }
-      }
-      right = lastTouched;
-      log("BidirectionalBubbleSort: left pass: remaining gap: " + (right - left));
-      for (int j = right - 1; j > left; j--) {
-        if (compareAndSwap(ia, j-1, j)) {
-          lastTouched = j;
-        }
-      }
-      left = lastTouched;
-    }
-  }
-
   public static void CombSort(IntegerArray ia) {
     // Bubble-like sort that compares by progressively smaller gaps.
     final float SHRINKFACTOR = 1.3f;
