@@ -5,7 +5,7 @@ public class SortTest {
   public static final int ARRAY_LENGTH = 1024;
   public static final int ARRAY_HEIGHT = 768;
 
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     if (args.length == 0) usage();
     String method = args[0];
 
