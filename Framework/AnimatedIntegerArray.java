@@ -101,6 +101,7 @@ public class AnimatedIntegerArray implements IntegerArray, Runnable {
     g.setColor(Color.black);
     g.fillRect(0, 0, array.length() + 1, array.height() + 1);
     g.setColor(Color.white);
+    // TODO(durandal): synchronize on dataRead/Written somehow.
     for (int i = 0; i < array.length(); i++) {
       if (dataWritten[i]) {
         g.setColor(Color.red);
