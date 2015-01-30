@@ -1,8 +1,12 @@
+package SortingMethods;
+
+import Framework.*;
+
 import java.util.concurrent.*;
 
-public class Sorts {
+public class SortUtils {
 
-  static void log(String s) {
+  public static void log(String s) {
     System.out.println(s);
   }
 
@@ -82,22 +86,6 @@ public class Sorts {
         // ... by doing a CompareAndSwap on everything after it
         compareAndSwap(ia, i, j);
       }
-    }
-  }
-
-  public static void BubbleSort(IntegerArray ia) {
-    for(int i = ia.length() - 1 ; i > 0 ; i--) {
-      log("BubbleSort: " + (i+1) + " elements remain to be sorted");
-      // find the ith largest element...
-      int lastTouched = 0;
-      for(int j = 0 ; j < i ; j++) {
-        // ... by bubbling it up to the end...
-        // if any two adjacent elements are out of order, swap them
-        if (compareAndSwap(ia, j, j+1)) {
-          lastTouched = j+1;  // remember the last element we actually touched...
-        }
-      }
-      i = lastTouched;  // ... and narrow future passes, knowing everything past it is sorted.
     }
   }
 

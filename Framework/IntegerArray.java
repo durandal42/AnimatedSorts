@@ -1,3 +1,5 @@
+package Framework;
+
 public interface IntegerArray {
   public int read(int i);
   public void write(int i, int value);

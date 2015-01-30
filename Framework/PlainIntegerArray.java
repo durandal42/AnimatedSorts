@@ -1,3 +1,5 @@
+package Framework;
+
 public class PlainIntegerArray implements IntegerArray {
   // the actual data
   private int[] array;

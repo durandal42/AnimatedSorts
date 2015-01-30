@@ -1,6 +1,8 @@
 import java.util.Random;
+import SortingMethods.*;
+import Framework.*;
 
-public class SortTest {
+public class SortDemo {
 
   public static final int ARRAY_LENGTH = 1024;
   public static final int ARRAY_HEIGHT = 768;
@@ -9,7 +11,7 @@ public class SortTest {
     if (args.length == 0) usage();
     String method = args[0];
 
-    IntegerArray ia = new FancyIntegerArray(ARRAY_LENGTH, ARRAY_HEIGHT, method);
+    IntegerArray ia = new AnimatedIntegerArray(ARRAY_LENGTH, ARRAY_HEIGHT, method);
     randomize(ia);
 
     sort(ia, method);
@@ -25,29 +27,29 @@ public class SortTest {
 
   public static void sort(IntegerArray ia, String method) {
     System.out.println("Begin sorting...");
-    if (method.equals("merge")) Sorts.MergeSort(ia);
-    else if (method.equals("heap")) Sorts.HeapSort(ia);
-    else if (method.equals("quick")) Sorts.QuickSort(ia);
-    else if (method.equals("radix")) Sorts.RadixSort(ia);
-    else if (method.equals("selection")) Sorts.SelectionSort(ia);
-    else if (method.equals("insertion")) Sorts.InsertionSort(ia);
-    else if (method.equals("bidirectionalbubble")) Sorts.BidirectionalBubbleSort(ia);
-    else if (method.equals("shaker")) Sorts.ShakerSort(ia);
-    else if (method.equals("shell")) Sorts.ShellSort(ia);
-    else if (method.equals("comb")) Sorts.CombSort(ia);
-    else if (method.equals("bubble")) Sorts.BubbleSort(ia);
-    else if (method.equals("silly")) Sorts.SillySort(ia);
-    else if (method.equals("exchange")) Sorts.ExchangeSort(ia);
-    else if (method.equals("threestooges")) Sorts.ThreeStoogesSort(ia);
-    else if (method.equals("counting")) Sorts.CountingSort(ia);
-    else if (method.equals("binaryradix")) Sorts.BinaryRadixSort(ia);
+    if (method.equals("merge")) SortUtils.MergeSort(ia);
+    else if (method.equals("heap")) SortUtils.HeapSort(ia);
+    else if (method.equals("quick")) SortUtils.QuickSort(ia);
+    else if (method.equals("radix")) SortUtils.RadixSort(ia);
+    else if (method.equals("selection")) SortUtils.SelectionSort(ia);
+    else if (method.equals("insertion")) SortUtils.InsertionSort(ia);
+    else if (method.equals("bidirectionalbubble")) SortUtils.BidirectionalBubbleSort(ia);
+    else if (method.equals("shaker")) SortUtils.ShakerSort(ia);
+    else if (method.equals("shell")) SortUtils.ShellSort(ia);
+    else if (method.equals("comb")) SortUtils.CombSort(ia);
+    else if (method.equals("bubble")) new BubbleSorter().sort(ia);
+    else if (method.equals("silly")) SortUtils.SillySort(ia);
+    else if (method.equals("exchange")) SortUtils.ExchangeSort(ia);
+    else if (method.equals("threestooges")) SortUtils.ThreeStoogesSort(ia);
+    else if (method.equals("counting")) SortUtils.CountingSort(ia);
+    else if (method.equals("binaryradix")) SortUtils.BinaryRadixSort(ia);
     else usage();
 
     System.out.println("Done sorting.");
   }
 
   public static void usage() {
-    System.out.println("java SortTest <sort-method>");
+    System.out.println("java SortDemo <sort-method>");
     System.out.println("sort-method can be any of the following:");
     System.out.println("\tmerge");
     System.out.println("\theap");
