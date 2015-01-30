@@ -11,11 +11,13 @@ public class SortDemo {
   static Map<String, Sorter> methods = registerSorters();
 
   static Map<String, Sorter> registerSorters() {
+    // TODO(durandal): load all implementations of Sorter automatically, derive names.
     Map<String, Sorter> sorters = new HashMap<String, Sorter>();
     sorters.put("bidirectionalbubble", new BidirectionalBubbleSorter());
     sorters.put("comb", new CombSorter());
     sorters.put("bubble", new BubbleSorter());
     sorters.put("exchange", new ExchangeSorter());
+    sorters.put("selection", new SelectionSorter());
     return java.util.Collections.unmodifiableMap(sorters);
   }
 
@@ -44,7 +46,6 @@ public class SortDemo {
     else if (method.equals("heap")) SortUtils.HeapSort(ia);
     else if (method.equals("quick")) SortUtils.QuickSort(ia);
     else if (method.equals("radix")) SortUtils.RadixSort(ia);
-    else if (method.equals("selection")) SortUtils.SelectionSort(ia);
     else if (method.equals("insertion")) SortUtils.InsertionSort(ia);
     else if (method.equals("shaker")) SortUtils.ShakerSort(ia);
     else if (method.equals("shell")) SortUtils.ShellSort(ia);
@@ -66,7 +67,6 @@ public class SortDemo {
     System.out.println("\tmerge");
     System.out.println("\theap");
     System.out.println("\tquick");
-    System.out.println("\tselection");
     System.out.println("\tinsertion");
     System.out.println("\tshaker");
     System.out.println("\tshell");
