@@ -41,4 +41,8 @@ public class PlainIntegerArray implements IntegerArray {
     return new PlainIntegerArray(length, height);
   }
 
+  public void destroy() {
+    // nothing to do;
+  }
+
 }

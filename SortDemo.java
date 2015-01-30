@@ -19,6 +19,7 @@ public class SortDemo {
     sorters.put("exchange", new ExchangeSorter());
     sorters.put("selection", new SelectionSorter());
     sorters.put("counting", new CountingSorter());
+    sorters.put("merge", new MergeSorter());
     return java.util.Collections.unmodifiableMap(sorters);
   }
 
@@ -43,7 +44,6 @@ public class SortDemo {
   public static void sort(IntegerArray ia, String method) {
     System.out.println("Begin sorting...");
     if (methods.containsKey(method)) methods.get(method).sort(ia);
-    else if (method.equals("merge")) SortUtils.MergeSort(ia);
     else if (method.equals("heap")) SortUtils.HeapSort(ia);
     else if (method.equals("quick")) SortUtils.QuickSort(ia);
     else if (method.equals("radix")) SortUtils.RadixSort(ia);
@@ -64,7 +64,6 @@ public class SortDemo {
     for (String method : methods.keySet()) {
         System.out.println("\t" + method);
     }
-    System.out.println("\tmerge");
     System.out.println("\theap");
     System.out.println("\tquick");
     System.out.println("\tinsertion");

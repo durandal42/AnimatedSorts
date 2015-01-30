@@ -10,4 +10,5 @@ public interface IntegerArray {
   public int height();
 
   public IntegerArray scratch(int length, int height, String name);
+  public void destroy();
 }
