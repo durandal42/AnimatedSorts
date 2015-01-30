@@ -6,4 +6,6 @@ public interface IntegerArray {
 
   public int length();
   public int height();
+
+  public IntegerArray scratch(int length, int height, String name);
 }

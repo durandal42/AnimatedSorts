@@ -160,7 +160,7 @@ public class Sorts {
   }
 
   public static void CountingSort(IntegerArray ia) {
-    IntegerArray counts = new FancyIntegerArray(
+    IntegerArray counts = ia.scratch(
         ia.height(),  // how many possible values are in the data
         10 * ia.length() / ia.height(),  // generous estimate of max count
         "element counts");
@@ -204,7 +204,7 @@ public class Sorts {
   }
 
   public static void MergeSort(IntegerArray ia) {
-    IntegerArray scratch = new FancyIntegerArray(
+    IntegerArray scratch = ia.scratch(
         ia.length(), ia.height(), "merge scratch buffer");
     resetDepth();
     // Recurse on the entire array.
@@ -488,7 +488,7 @@ public class Sorts {
   public static void RadixSort(IntegerArray ia) {
     int digits = (int) Math.ceil(Math.log(ia.height()) / Math.log(2));
 
-    iaPartition partition = new iaPartition(ia.length(), ia.height());
+    iaPartition partition = new iaPartition(ia);
 
     for(int i = 0 ; i < digits ; i++) {
       log("Starting radix pass " + i + " of " + digits);
@@ -513,8 +513,8 @@ public class Sorts {
 
     int leftMin, leftMax, rightMin, rightMax;
  
-    public iaPartition(int length, int height) {
-      data = new FancyIntegerArray(length, height, "partition buffer");
+    public iaPartition(IntegerArray ia) {
+      data = ia.scratch(ia.length(), ia.height(), "partition buffer");
       clear();
     }
 

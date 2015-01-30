@@ -149,4 +149,8 @@ public class FancyIntegerArray implements IntegerArray, Runnable {
     return array.height();
   }
 
+  public IntegerArray scratch(int length, int height, String name) {
+    return new FancyIntegerArray(length, height, name);
+  }
+
 }

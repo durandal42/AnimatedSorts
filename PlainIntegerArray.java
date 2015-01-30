@@ -35,4 +35,8 @@ public class PlainIntegerArray implements IntegerArray {
     return height;
   }
 
+  public IntegerArray scratch(int length, int height, String name) {
+    return new PlainIntegerArray(length, height);
+  }
+
 }
