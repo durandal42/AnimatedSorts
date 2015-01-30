@@ -18,6 +18,7 @@ public class SortDemo {
     sorters.put("bubble", new BubbleSorter());
     sorters.put("exchange", new ExchangeSorter());
     sorters.put("selection", new SelectionSorter());
+    sorters.put("counting", new CountingSorter());
     return java.util.Collections.unmodifiableMap(sorters);
   }
 
@@ -51,7 +52,6 @@ public class SortDemo {
     else if (method.equals("shell")) SortUtils.ShellSort(ia);
     else if (method.equals("silly")) SortUtils.SillySort(ia);
     else if (method.equals("threestooges")) SortUtils.ThreeStoogesSort(ia);
-    else if (method.equals("counting")) SortUtils.CountingSort(ia);
     else if (method.equals("binaryradix")) SortUtils.BinaryRadixSort(ia);
     else usage();
 
@@ -73,7 +73,6 @@ public class SortDemo {
     System.out.println("\tradix");
     System.out.println("\tsilly");
     System.out.println("\tthreestooges");
-    System.out.println("\tcounting");
     System.out.println("\tbinaryradix");
     System.exit(0);
   }
