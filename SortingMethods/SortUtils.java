@@ -74,57 +74,6 @@ public class SortUtils {
     }
   }
 
-  public static void QuickSort(IntegerArray ia) {
-    QuickSortRecurse(ia, 0, ia.length());
-  }
-  private static void QuickSortRecurse(final IntegerArray ia,
-                                       final int left, final int right) {
-    if (right - left <= 1) {
-      return;
-    }
-
-    final int pivot = QuickSortPartition(ia, left, right);
-
-    // Recursively sort each half.
-    Future<Void> leftDone = run(new Callable<Void>() {
-      public Void call() {
-        QuickSortRecurse(ia, left, pivot);
-        return null;
-      }
-    });
-    Future<Void> rightDone = run(new Callable<Void>() {
-      public Void call() {
-        QuickSortRecurse(ia, pivot + 1, right);
-        return null;
-      }
-    });
-    join(leftDone);
-    join(rightDone);
-  }
-  public static int QuickSortSelectPivot(IntegerArray ia, int left, int right) {
-    return (left + right) / 2;
-  }
-  public static int QuickSortPartition(IntegerArray ia,
-                                       int left, int right) {
-    int pivot = QuickSortSelectPivot(ia, left, right);
-
-    ia.swap(pivot, right - 1);  // move pivot to end
-    pivot = right - 1;
-
-    right--;  // don't include pivot at end
-    while (left < right) {
-      if (ia.compare(left, pivot)) {
-        ia.swap(left, --right);
-      } else {
-        left++;
-      }
-    }
-
-    ia.swap(pivot, left);  // move pivot to its final place
-    pivot = left;
-    return pivot;
-  }
-
   private static boolean getNthBit(int x, int n) {
     return ((x & (1 << n)) != 0);
   }

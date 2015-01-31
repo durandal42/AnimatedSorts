@@ -24,6 +24,7 @@ public class SortDemo {
     sorters.put("insertion", new InsertionSorter());
     sorters.put("shell", new ShellSorter());
     sorters.put("heap", new HeapSorter());
+    sorters.put("quick", new QuickSorter());
     return java.util.Collections.unmodifiableMap(sorters);
   }
 
@@ -49,7 +50,6 @@ public class SortDemo {
   public static void sort(IntegerArray ia, String method) {
     System.out.println("Begin sorting...");
     if (methods.containsKey(method)) methods.get(method).sort(ia);
-    else if (method.equals("quick")) SortUtils.QuickSort(ia);
     else if (method.equals("radix")) SortUtils.RadixSort(ia);
     else if (method.equals("silly")) SortUtils.SillySort(ia);
     else if (method.equals("threestooges")) SortUtils.ThreeStoogesSort(ia);
@@ -65,7 +65,6 @@ public class SortDemo {
     for (String method : methods.keySet()) {
         System.out.println("\t" + method);
     }
-    System.out.println("\tquick");
     System.out.println("\tradix");
     System.out.println("\tsilly");
     System.out.println("\tthreestooges");
