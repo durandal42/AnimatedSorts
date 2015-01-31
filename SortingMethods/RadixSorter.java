@@ -28,6 +28,7 @@ public class RadixSorter implements Sorter {
       }
       partition.clear();
     }
+    scratch.destroy();
   }
   private static class iaPartition {
     // ia-backed partition for a fixed number of elements.
