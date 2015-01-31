@@ -35,12 +35,21 @@ public class SortDemo {
   public static void main(String[] args) {
     if (args.length == 0) usage();
     String method = args[0];
+    demo(method);
+  }
 
+  public static void demo(String method) {
     IntegerArray ia = new AnimatedIntegerArray(ARRAY_LENGTH, ARRAY_HEIGHT, method);
     randomize(ia);
 
     sort(ia, method);
-    System.exit(0);
+    if (verify(ia)) {
+      ia.log("Success: " + method);
+      ia.destroy();
+    } else {
+      ia.log("Failure: " + method);
+      System.exit(-1);
+    }
   }
 
   public static void randomize(IntegerArray ia) {
@@ -49,6 +58,17 @@ public class SortDemo {
     for (int i = 0; i < ia.length(); i++) {
       ia.write(i, r.nextInt(ia.height()));
     }
+  }
+
+  public static boolean verify(IntegerArray ia) {
+    ia.log("Verifying sort...");
+    for (int i = 0; i < ia.length()-1; i++) {
+      if (ia.compare(i, i+1)) {
+        ia.log("Out-of-order elements found at " + i + "," + (i+1));
+        return false;
+      }
+    }
+    return true;
   }
 
   public static void sort(IntegerArray ia, String method) {
