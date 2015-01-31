@@ -10,18 +10,21 @@ public class CountingSorter implements Sorter {
         10 * ia.length() / ia.height(),  // generous estimate of max count
         "element counts");
 
-    ia.log("CountingSort: zeroing counts.");
+    counts.log("CountingSort: zeroing counts.");
+    ia.log("CountingSort");
     for (int i = 0; i < ia.height(); i++) {
       counts.write(i, 0);
     }
 
-    ia.log("CountingSort: counting elements.");
+    counts.log("CountingSort: accumulating counts.");
+    ia.log("CountingSort: scanning elements.");
     for (int i = 0; i < ia.length(); i++) {
       int val = ia.read(i);
       counts.write(val, counts.read(val) + 1);
     }
 
-    ia.log("CountingSort: writing counted elements back into array.");
+    counts.log("CountingSort: scanning counts.");
+    ia.log("CountingSort: writing counted elements.");
     for (int i = 0, j = 0; i < ia.height(); i++) {
       for (int count = counts.read(i); count > 0; count--) {
         ia.write(j++, i);
