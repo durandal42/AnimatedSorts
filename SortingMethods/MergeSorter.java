@@ -64,6 +64,8 @@ public class MergeSorter implements Sorter {
       mergeFrom = scratch;
       mergeTo = ia;
     }
+    mergeFrom.log("MergeSort: merging from...");
+    mergeTo.log("MergeSort: merging to...");
 
     if (mergeFrom.compare(mid, mid - 1)) {
       // The entire first half is less than the entire right half; no need to merge.
