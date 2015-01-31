@@ -78,25 +78,6 @@ public class SortUtils {
     return ((x & (1 << n)) != 0);
   }
 
-  public static void SillySort(IntegerArray ia) {
-    int count = 0;
-    int mostFailures = 0;
-    ia.log("SillySort: randomly CompareAndSwapping until " + ia.length() + " consecutive failures.");
-    while(count++ < ia.length()) {
-      int i = (int) (Math.random() * (double) ia.length());
-      int j = (int) (Math.random() * (double) ia.length());
-      if ((i > j && compareAndSwap(ia, j,i)) ||
-          (i < j && compareAndSwap(ia, i,j))) {
-        if (count > mostFailures) {
-          ia.log("SillySort: " + count + " failed CompareAndSwaps before a success.");
-          mostFailures = count;
-        }
-        count = 0;
-      }
-    }
-    new InsertionSorter().sort(ia);
-  }
-
   public static void ThreeStoogesSort(IntegerArray ia) {
     ThreeStoogesRecurse(ia, 0, ia.length());
   }
