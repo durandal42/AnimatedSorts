@@ -2,6 +2,7 @@ import SortingMethods.*;
 import Framework.*;
 
 import java.util.*;
+import java.util.concurrent.*;
 
 public class SortDemo {
 
@@ -32,24 +33,37 @@ public class SortDemo {
     return java.util.Collections.unmodifiableMap(sorters);
   }
 
+  // For parallel demos.
+  static ExecutorService threadPool = Executors.newCachedThreadPool();
+
   public static void main(String[] args) {
-    if (args.length == 0) usage();
-    String method = args[0];
-    demo(method);
+    if (args.length == 0) {
+      //usage();
+      for (String method : methods.keySet()) {
+        demo(method);
+      }
+    } else {
+      for (String method : args) {
+        demo(method);
+      }
+    }
   }
 
-  public static void demo(String method) {
-    IntegerArray ia = new AnimatedIntegerArray(ARRAY_LENGTH, ARRAY_HEIGHT, method);
-    randomize(ia);
-
-    sort(ia, method);
-    if (verify(ia)) {
-      ia.log("Success: " + method);
-      ia.destroy();
-    } else {
-      ia.log("Failure: " + method);
-      System.exit(-1);
-    }
+  public static void demo(final String method) {
+    if (!methods.containsKey(method)) usage();
+    threadPool.submit(new Callable<Void>() {
+      public Void call() {
+        IntegerArray ia = new AnimatedIntegerArray(ARRAY_LENGTH, ARRAY_HEIGHT, method);
+        randomize(ia);
+        ia.log("Sorting: " + method);
+        methods.get(method).sort(ia);
+        if (verify(ia)) {
+          ia.log("Success: " + method);
+          ia.destroy();
+        }
+        return null;
+      }
+    });
   }
 
   public static void randomize(IntegerArray ia) {
@@ -71,16 +85,8 @@ public class SortDemo {
     return true;
   }
 
-  public static void sort(IntegerArray ia, String method) {
-    System.out.println("Begin sorting...");
-    if (methods.containsKey(method)) methods.get(method).sort(ia);
-    else usage();
-
-    System.out.println("Done sorting.");
-  }
-
   public static void usage() {
-    System.out.println("java SortDemo <sort-method>");
+    System.out.println("java SortDemo <sort-method> [<additional sort-method> ...]");
     System.out.println("sort-method can be any of the following:");
     for (String method : methods.keySet()) {
         System.out.println("\t" + method);

@@ -74,7 +74,7 @@ public class AnimatedIntegerArray implements IntegerArray, Runnable {
         try {
           Thread.sleep(sleepTime);
         } catch (InterruptedException e) {
-        // do nothing
+         // do nothing
         }
       }
     }
