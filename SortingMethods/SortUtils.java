@@ -78,21 +78,4 @@ public class SortUtils {
     return ((x & (1 << n)) != 0);
   }
 
-  public static void ThreeStoogesSort(IntegerArray ia) {
-    ThreeStoogesRecurse(ia, 0, ia.length());
-  }
-  public static void ThreeStoogesRecurse(IntegerArray ia,
-                                         int left, int right) {
-    if (right - left < 2) return;
-    if (right - left == 2) {
-      compareAndSwap(ia, left, right - 1);
-      return;
-    }
-    int pivot1 = left + (right - left) / 3;
-    int pivot2 = left + (right - left) * 2 / 3;
-    ThreeStoogesRecurse(ia, left, pivot2);
-    ThreeStoogesRecurse(ia, pivot1, right);
-    ThreeStoogesRecurse(ia, left, pivot2);
-  }
-
 }
