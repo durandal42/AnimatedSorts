@@ -55,4 +55,5 @@ public class QuickSorter implements Sorter {
     ia.swap(pivot, left);  // move pivot to its final place
     pivot = left;
     return pivot;
-  }}
+  }
+}

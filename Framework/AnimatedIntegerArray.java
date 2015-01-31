@@ -7,7 +7,7 @@ import java.awt.image.BufferStrategy;
 public class AnimatedIntegerArray implements IntegerArray, Runnable {
 
   public static final int MAX_FPS = 100;
-  public static final double ENFORCED_DELAY_MS = .10;
+  public static final double ENFORCED_DELAY_MS = 1;
 
   private Frame frame;
   private Canvas canvas;
