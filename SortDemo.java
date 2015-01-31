@@ -38,6 +38,7 @@ public class SortDemo {
   }
 
   public static void randomize(IntegerArray ia) {
+    ia.log("Filling with random data...");
     Random r = new Random();
     for (int i = 0; i < ia.length(); i++) {
       ia.write(i, r.nextInt(ia.height()));
