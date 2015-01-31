@@ -78,15 +78,6 @@ public class SortUtils {
     }
   }
 
-  public static void InsertionSort(IntegerArray ia) {
-    for (int i = 1; i < ia.length(); i++) {
-      log("InsertionSort: " + i + " of " + ia.length() + " elements are sorted");
-      for (int j = i; j >= 1; j--) {
-        if (!compareAndSwap(ia, j - 1, j)) break;
-      }
-    }
-  }
-
   public static void ShellSort(IntegerArray ia) {
     int gap = ia.length();
     do {
@@ -309,7 +300,7 @@ public class SortUtils {
         count = 0;
       }
     }
-    InsertionSort(ia);
+    new InsertionSorter().sort(ia);
   }
 
   public static void ThreeStoogesSort(IntegerArray ia) {
