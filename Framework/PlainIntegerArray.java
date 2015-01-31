@@ -45,4 +45,8 @@ public class PlainIntegerArray implements IntegerArray {
     // nothing to do;
   }
 
+  public void log(String message) {
+    System.out.println(message);
+  }
+
 }

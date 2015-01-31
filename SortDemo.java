@@ -22,6 +22,7 @@ public class SortDemo {
     sorters.put("merge", new MergeSorter());
     sorters.put("shaker", new ShakerSorter());
     sorters.put("insertion", new InsertionSorter());
+    sorters.put("shell", new ShellSorter());
     return java.util.Collections.unmodifiableMap(sorters);
   }
 
@@ -49,7 +50,6 @@ public class SortDemo {
     else if (method.equals("heap")) SortUtils.HeapSort(ia);
     else if (method.equals("quick")) SortUtils.QuickSort(ia);
     else if (method.equals("radix")) SortUtils.RadixSort(ia);
-    else if (method.equals("shell")) SortUtils.ShellSort(ia);
     else if (method.equals("silly")) SortUtils.SillySort(ia);
     else if (method.equals("threestooges")) SortUtils.ThreeStoogesSort(ia);
     else if (method.equals("binaryradix")) SortUtils.BinaryRadixSort(ia);
@@ -66,7 +66,6 @@ public class SortDemo {
     }
     System.out.println("\theap");
     System.out.println("\tquick");
-    System.out.println("\tshell");
     System.out.println("\tradix");
     System.out.println("\tsilly");
     System.out.println("\tthreestooges");

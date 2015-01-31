@@ -9,7 +9,7 @@ public class BidirectionalBubbleSorter implements Sorter {
     int left = 0;
     int right = ia.length();
     while (left < right) {
-      SortUtils.log("BidirectionalBubbleSort: right pass: remaining gap: " + (right - left));
+      ia.log("BidirectionalBubbleSort: right pass: remaining gap: " + (right - left));
       int lastTouched = left;
       for (int j = left; j < right - 1; j++) {
         if (SortUtils.compareAndSwap(ia, j, j+1)) {
@@ -17,7 +17,7 @@ public class BidirectionalBubbleSorter implements Sorter {
         }
       }
       right = lastTouched;
-      SortUtils.log("BidirectionalBubbleSort: left pass: remaining gap: " + (right - left));
+      ia.log("BidirectionalBubbleSort: left pass: remaining gap: " + (right - left));
       for (int j = right - 1; j > left; j--) {
         if (SortUtils.compareAndSwap(ia, j-1, j)) {
           lastTouched = j;

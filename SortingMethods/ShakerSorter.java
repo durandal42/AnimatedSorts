@@ -7,7 +7,7 @@ public class ShakerSorter implements Sorter {
     int left = 0;
     int right = ia.length() - 1;
     while (left < right) {
-      SortUtils.log("ShakerSort: remaining gap: " + (right - left));
+      ia.log("ShakerSort: remaining gap: " + (right - left));
       // Find both the min and max...
       int min = left;
       int max = left;

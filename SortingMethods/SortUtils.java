@@ -6,10 +6,6 @@ import java.util.concurrent.*;
 
 public class SortUtils {
 
-  public static void log(String s) {
-    System.out.println(s);
-  }
-
   // For multi-threaded sorts:
   static ExecutorService threadPool = Executors.newCachedThreadPool();
 
@@ -78,25 +74,12 @@ public class SortUtils {
     }
   }
 
-  public static void ShellSort(IntegerArray ia) {
-    int gap = ia.length();
-    do {
-      gap = Math.max(1, gap / 3);
-      log("ShellSort: InsertionSorting with a gap of: " + gap);
-      for (int i = gap; i < ia.length(); i++) {
-        for (int j = i; j >= gap; j -= gap) {
-         if (!compareAndSwap(ia, j - gap, j)) break;
-        }
-      }
-    } while (gap != 1);
-  }
-
   public static void HeapSort(IntegerArray ia) {
-    log("HeapSort: heapifying...");
+    ia.log("HeapSort: heapifying...");
     for (int i = ia.length() / 2; i > 0; i--) {
       HeapSortPush(ia, i, ia.length());
     }
-    log("HeapSort: popping from the heap...");
+    ia.log("HeapSort: popping from the heap...");
     for (int i = ia.length() - 1; i > 0; i--) {
       ia.swap(0, i);
       HeapSortPush(ia, 1, i);
@@ -224,7 +207,7 @@ public class SortUtils {
     iaPartition partition = new iaPartition(ia);
 
     for(int i = 0 ; i < digits ; i++) {
-      log("Starting radix pass " + i + " of " + digits);
+      ia.log("Starting radix pass " + i + " of " + digits);
       int count = 0;
       for(int j = 0 ; j < ia.length() ; j++) {
         int x = ia.read(j);
@@ -280,21 +263,21 @@ public class SortUtils {
       leftMax = 0;
       rightMin = data.length();
       rightMax = data.length();
-      log("clear called");
+      data.log("clear called");
     }
   }
 
   public static void SillySort(IntegerArray ia) {
     int count = 0;
     int mostFailures = 0;
-    log("SillySort: randomly CompareAndSwapping until " + ia.length() + " consecutive failures.");
+    ia.log("SillySort: randomly CompareAndSwapping until " + ia.length() + " consecutive failures.");
     while(count++ < ia.length()) {
       int i = (int) (Math.random() * (double) ia.length());
       int j = (int) (Math.random() * (double) ia.length());
       if ((i > j && compareAndSwap(ia, j,i)) ||
           (i < j && compareAndSwap(ia, i,j))) {
         if (count > mostFailures) {
-          log("SillySort: " + count + " failed CompareAndSwaps before a success.");
+          ia.log("SillySort: " + count + " failed CompareAndSwaps before a success.");
           mostFailures = count;
         }
         count = 0;

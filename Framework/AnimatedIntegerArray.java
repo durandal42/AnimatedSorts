@@ -159,4 +159,9 @@ public class AnimatedIntegerArray implements IntegerArray, Runnable {
     return new AnimatedIntegerArray(length, height, name);
   }
 
+  public void log(String message) {
+    frame.setTitle(message);
+    array.log(message);
+  }
+
 }
