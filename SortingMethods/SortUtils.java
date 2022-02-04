@@ -8,7 +8,6 @@ public class SortUtils {
 
   // For multi-threaded sorts:
   static ExecutorService threadPool = Executors.newCachedThreadPool();
-
   static boolean PARALLEL = false;
 
   static <V> Future<V> run(Callable<V> c) {

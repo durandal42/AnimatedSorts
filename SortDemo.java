@@ -66,6 +66,7 @@ public class SortDemo {
     });
   }
 
+  // TODO(durandal): implement other strategies for populating initial data
   public static void randomize(IntegerArray ia) {
     ia.log("Filling with random data...");
     Random r = new Random();
